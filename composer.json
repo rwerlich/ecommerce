@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "": "vendor\\rwerlich\\php-classes\\src"
+            "Werlich\\": "vendor\\rwerlich\\php-classes\\src"
         }
     }
 }
