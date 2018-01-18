@@ -28,6 +28,7 @@ class RepositoryCategory {
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':category', $category->getCategory());
         $stmt->execute();
+        $this->geraMenu();
     }
     
     public function delete(int $idcategory) {
@@ -35,6 +36,7 @@ class RepositoryCategory {
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':idcategory', $idcategory);
         $stmt->execute();
+        $this->geraMenu();
     }
     
     public function find(int $idcategory) {
@@ -53,6 +55,16 @@ class RepositoryCategory {
         $stmt->bindValue(':category', $category->getCategory());
         $stmt->bindValue(':idcategory', $category->getIdcategory());
         $stmt->execute();
+        $this->geraMenu();
+    }
+    
+    public function geraMenu() {
+        $categories = $this->listAll();
+        $html = [];
+        foreach ($categories as $row){
+            array_push($html, "<li><a href='/ecommerce/categories/{$row['idcategory']}'>{$row['category']}</a></li>");
+        }
+        file_put_contents("{$_SERVER['DOCUMENT_ROOT']}/ecommerce/views/categories-menu.html", implode('', $html));
     }
 
 }

@@ -2,7 +2,6 @@
 
 require_once("vendor/autoload.php");
 
-
 session_start();
 
 use \Slim\Slim;
@@ -168,6 +167,15 @@ $app->post('/admin/categories/:idcategory', function($idcategory) {
     exit;
 });
 
+$app->get('/categories/:idcategory', function($idcategory) {    
+    $repositoryCategory = new RepositoryCategory();
+    $page = new Page();
+    $page->setTpl("category", array(
+        'category' => $repositoryCategory->find((int) $idcategory),
+        'products' => []
+    ));
+});
+
 
 $app->run();
-?> 
+ 
