@@ -2,7 +2,6 @@
 
 namespace Werlich\Model\Entities;
 
-use \Werlich\Model\Repository\RepositoryUser;
 
 class User {
 
