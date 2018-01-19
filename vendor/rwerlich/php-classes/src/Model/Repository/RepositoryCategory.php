@@ -58,7 +58,7 @@ class RepositoryCategory {
         $this->geraMenu();
     }
     
-    public function geraMenu() {
+    private function geraMenu() {
         $categories = $this->listAll();
         $html = [];
         foreach ($categories as $row){
