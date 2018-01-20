@@ -54,12 +54,14 @@ class RepositoryProduct {
 
     public function update(Product $product) {
         $query = "UPDATE tb_products SET
-                    login = :login,
-                    password = :password,
-                    admin = :admin,
-                    nome = :nome,
-                    email = :email,
-                    phone =:phone
+                    product = :product,
+                    vlprice = :vlprice,
+                    vlwidth = :vlwidth,
+                    vlheight = :vlheight,
+                    vllength = :vllength,
+                    vlweight =:vlweight,
+                    url =:url,
+                    imgproduct =:imgproduct
                   WHERE idproduct = :idproduct";
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':product', $product->getProduct());
@@ -74,7 +76,7 @@ class RepositoryProduct {
         $stmt->execute();
     }
 
-    public function setImg($file) {
+    public function uploadImg($file) {
         $extension = explode('.', $file['name']);
         $extension = end($extension);
         switch ($extension) {
@@ -89,16 +91,17 @@ class RepositoryProduct {
                 $image = imagecreatefrompng($file["tmp_name"]);
                 break;
         }
+        $hora = time();
         $dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR .
                 "ecommerce" . DIRECTORY_SEPARATOR .
                 "assets" . DIRECTORY_SEPARATOR .
                 "site" . DIRECTORY_SEPARATOR .
                 "img" . DIRECTORY_SEPARATOR .
                 "products" . DIRECTORY_SEPARATOR .
-                time() . ".jpg";
+                $hora . ".jpg";
         imagejpeg($image, $dist);
         imagedestroy($image);
-        return $dist;
+        return "{$hora}.jpg";
     }
 
 }

@@ -18,7 +18,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        <form role="form" action="/admin/products/{$product.idproduct}" method="post" enctype="multipart/form-data">
+        <form role="form" action="/ecommerce/admin/products/{$product.idproduct}" method="post" enctype="multipart/form-data">
           <div class="box-body">
             <div class="form-group">
               <label for="product">Nome da produto</label>
@@ -44,6 +44,10 @@
               <label for="vlweight">Peso</label>
               <input type="number" class="form-control" id="vlweight" name="vlweight" step="0.01" placeholder="0.00" value="{$product.vlweight}">
             </div>
+              <div class="form-group">
+                                <label for="url">Url</label>
+                                <input type="text" class="form-control" id="url" name="url" value="{$product.url}">
+                            </div>
             <div class="form-group">
               <label for="imgproduct">Foto</label>
               <input type="file" class="form-control" id="imgproduct" name="imgproduct">

@@ -29,10 +29,10 @@ $app->post('/admin/products/create', function() {
     $repositoryUser = new RepositoryUser();
     $repositoryUser->verifyLogin();
     $repositoryProduct = new RepositoryProduct();
-    $img = $repositoryProduct->setImg($_FILES['imgproduct']);
+    $img = $repositoryProduct->uploadImg($_FILES['imgproduct']);
     $product = new Product();
-    $product->setAtributes('', $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], 
-            $_POST['vlweight'], $_POST['url'], $img, '');
+    $product->setAtributes('', $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], $_POST['vlweight'], $_POST['url'], $img, '');
+
     $repositoryProduct->insert($product);
     header("Location: /ecommerce/admin/products");
     exit;
@@ -60,12 +60,16 @@ $app->get('/admin/products/:idproduct', function($idproduct) {
 $app->post('/admin/products/:idproduct', function($idproduct) {
     $repositoryUser = new RepositoryUser();
     $repositoryUser->verifyLogin();
-    $repositoryProduct = new RepositoryProduct();
-    $img = $repositoryProduct->setImg($_FILES['imgproduct']);
-    $product = new Product();
-    $product->setAtributes($idproduct, $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], 
-            $_POST['vlweight'], $_POST['url'], $img, '');
-    $repositoryProduct->update($product);    
+    $repositoryProduct = new RepositoryProduct();      
+    if($_FILES['imgproduct']['name'] != '' && $_FILES['imgproduct']['size'] > 0){
+        $img = $repositoryProduct->uploadImg($_FILES['imgproduct']);
+    }else{
+        $product = $repositoryProduct->find((int) $idproduct);
+        $img = $product['imgproduct'];
+    }        
+    $product = new Product(); 
+    $product->setAtributes($idproduct, $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], $_POST['vlweight'], $_POST['url'], $img, '');
+    $repositoryProduct->update($product);
     header("Location: /ecommerce/admin/products");
     exit;
 });
