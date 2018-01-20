@@ -45,6 +45,36 @@ $app->get('/admin/categories/:idcategory/delete', function($idcategory) {
     exit;
 });
 
+$app->get('/admin/categories/:idcategory/products', function($idcategory) {
+    $repositoryUser = new RepositoryUser();
+    $repositoryUser->verifyLogin();
+    $repositoryCategory = new RepositoryCategory();
+    $page = new PageAdmin();
+    $page->setTpl("categories-products", array(
+        "category" => $repositoryCategory->find((int) $idcategory),
+        "productsRelated" => $repositoryCategory->getProducts(true, (int) $idcategory),
+        "productsNotRelated" => $repositoryCategory->getProducts(false, (int) $idcategory)
+    ));
+});
+
+$app->get('/admin/categories/:idcategory/products/:idproduct/add', function($idcategory, $idproduct) {
+    $repositoryUser = new RepositoryUser();
+    $repositoryUser->verifyLogin();
+    $repositoryCategory = new RepositoryCategory();
+    $repositoryCategory->insertProduct($idcategory, $idproduct);
+    header("Location: /ecommerce/admin/categories/{$idcategory}/products");
+    exit;    
+});
+
+$app->get('/admin/categories/:idcategory/products/:idproduct/remove', function($idcategory, $idproduct) {
+    $repositoryUser = new RepositoryUser();
+    $repositoryUser->verifyLogin();
+    $repositoryCategory = new RepositoryCategory();
+    $repositoryCategory->deleteProduct($idcategory, $idproduct);
+    header("Location: /ecommerce/admin/categories/{$idcategory}/products");
+    exit;    
+});
+
 $app->get('/admin/categories/:idcategory', function($idcategory) {
     $repositoryUser = new RepositoryUser();
     $repositoryUser->verifyLogin();
@@ -66,3 +96,5 @@ $app->post('/admin/categories/:idcategory', function($idcategory) {
     header("Location: /ecommerce/admin/categories");
     exit;
 });
+
+

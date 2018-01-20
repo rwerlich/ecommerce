@@ -5,7 +5,7 @@ namespace Werlich\Model\Repository;
 use \Werlich\Model\Entities\Category;
 
 class RepositoryCategory {
-    
+
     private $bd;
 
     public function __construct() {
@@ -13,15 +13,15 @@ class RepositoryCategory {
         $pass = "";
         $db = "db_ecommerce";
         $this->bd = new \PDO("mysql:host=localhost;dbname={$db}", $dbuser, $pass);
-    }    
-    
+    }
+
     public function listAll() {
         $query = "SELECT * FROM tb_categories ORDER BY idcategory DESC";
         $stmt = $this->bd->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-    
+
     public function insert(Category $category) {
         $query = "INSERT INTO tb_categories (category) "
                 . "VALUES (:category)";
@@ -30,7 +30,7 @@ class RepositoryCategory {
         $stmt->execute();
         $this->geraMenu();
     }
-    
+
     public function delete(int $idcategory) {
         $query = "DELETE FROM tb_categories WHERE idcategory = :idcategory";
         $stmt = $this->bd->prepare($query);
@@ -38,15 +38,15 @@ class RepositoryCategory {
         $stmt->execute();
         $this->geraMenu();
     }
-    
+
     public function find(int $idcategory) {
         $query = "SELECT * FROM tb_categories WHERE idcategory = :idcategory";
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':idcategory', $idcategory);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);        
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    
+
     public function update(Category $category) {
         $query = "UPDATE tb_categories SET
                     category = :category
@@ -57,14 +57,49 @@ class RepositoryCategory {
         $stmt->execute();
         $this->geraMenu();
     }
-    
+
     private function geraMenu() {
         $categories = $this->listAll();
         $html = [];
-        foreach ($categories as $row){
+        foreach ($categories as $row) {
             array_push($html, "<li><a href='/ecommerce/categories/{$row['idcategory']}'>{$row['category']}</a></li>");
         }
         file_put_contents("{$_SERVER['DOCUMENT_ROOT']}/ecommerce/views/categories-menu.html", implode('', $html));
+    }
+
+    public function getProducts(bool $related, int $idcategory) {
+        if ($related === true) {
+            $query = "SELECT * FROM tb_products WHERE idproduct IN(
+    SELECT p.idproduct FROM tb_products as p INNER JOIN tb_productscategories as b ON p.idproduct = b.idproduct 
+    WHERE b.idcategory = :idcategory) ";
+        } else {
+            $query = "SELECT * FROM tb_products WHERE idproduct NOT IN(
+    SELECT p.idproduct FROM tb_products as p INNER JOIN tb_productscategories as b ON p.idproduct = b.idproduct 
+    WHERE b.idcategory = :idcategory) ";
+        }
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idcategory', $idcategory);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    public function deleteProduct(int $idcategory, int $idproduct) {
+        $query = "DELETE FROM tb_productscategories WHERE idcategory = :idcategory AND idproduct = :idproduct";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idcategory', $idcategory);
+        $stmt->bindValue(':idproduct', $idproduct);
+        $stmt->execute();
+        $this->geraMenu();
+    }
+    
+    public function insertProduct(int $idcategory, int $idproduct) {
+        $query = "INSERT INTO tb_productscategories (idcategory, idproduct) "
+                . "VALUES (:idcategory, :idproduct)";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idcategory', $idcategory);
+        $stmt->bindValue(':idproduct', $idproduct);
+        $stmt->execute();
+        $this->geraMenu();
     }
 
 }

@@ -2,6 +2,7 @@
 
 use \Werlich\Page;
 use \Werlich\Model\Repository\RepositoryProduct;
+use \Werlich\Model\Repository\RepositoryCategory;
 
 $app->get('/', function() {
     $repositoryProduct = new RepositoryProduct();
@@ -18,6 +19,6 @@ $app->get('/categories/:idcategory', function($idcategory) {
     $page = new Page();
     $page->setTpl("category", array(
         'category' => $repositoryCategory->find((int) $idcategory),
-        'products' => []
+        'products' => $repositoryCategory->getProducts(true, (int) $idcategory)
     ));
 });
