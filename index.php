@@ -9,6 +9,7 @@ use \Slim\Slim;
 $app = new Slim();
 $app->config('debug', true);
 
+require_once("functions.php");
 require_once("controllers/site.php");
 require_once("controllers/admin-login.php");
 require_once("controllers/admin-users.php");

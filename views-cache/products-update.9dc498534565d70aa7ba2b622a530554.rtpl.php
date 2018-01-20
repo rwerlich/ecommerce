@@ -18,7 +18,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        <form role="form" action="/admin/products/<?php echo htmlspecialchars( $product["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" method="post" enctype="multipart/form-data">
+        <form role="form" action="/ecommerce/admin/products/<?php echo htmlspecialchars( $product["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" method="post" enctype="multipart/form-data">
           <div class="box-body">
             <div class="form-group">
               <label for="product">Nome da produto</label>
@@ -44,6 +44,10 @@
               <label for="vlweight">Peso</label>
               <input type="number" class="form-control" id="vlweight" name="vlweight" step="0.01" placeholder="0.00" value="<?php echo htmlspecialchars( $product["vlweight"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
             </div>
+              <div class="form-group">
+                                <label for="url">Url</label>
+                                <input type="text" class="form-control" id="url" name="url" value="<?php echo htmlspecialchars( $product["url"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
+                            </div>
             <div class="form-group">
               <label for="imgproduct">Foto</label>
               <input type="file" class="form-control" id="imgproduct" name="imgproduct">
