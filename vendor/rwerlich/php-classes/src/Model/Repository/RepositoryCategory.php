@@ -101,5 +101,28 @@ class RepositoryCategory {
         $stmt->execute();
         $this->geraMenu();
     }
+    
+    public function getProductsPage(int $page, int $itens, $idcategory) {
+        
+        $start = ($page -1) * $itens;
+        
+        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM tb_products as p INNER JOIN tb_productscategories as b ON p.idproduct = b.idproduct "
+                . "INNER JOIN tb_categories as c ON c.idcategory = b.idcategory WHERE c.idcategory = :idcategory LIMIT {$start}, {$itens}";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idcategory', $idcategory);
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $query = "SELECT FOUND_ROWS() as total";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $total = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return [
+            'data' => $results,
+            'total' => $total[0]['total'],
+            'pages' => ceil($total[0]['total'] / $itens)
+        ];
+    }
 
 }
