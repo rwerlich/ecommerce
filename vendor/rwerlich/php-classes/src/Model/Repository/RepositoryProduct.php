@@ -103,5 +103,22 @@ class RepositoryProduct {
         imagedestroy($image);
         return "{$hora}.jpg";
     }
+    
+    public function getFromUrl(String $url) {
+        $query = "SELECT * FROM tb_products WHERE url = :url";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':url', $url);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+    
+    public function getCategories(int $idproduct) {
+        $query = "SELECT * FROM tb_categories as c INNER JOIN tb_productscategories as b ON c.idcategory = b.idcategory "
+                . "WHERE b.idproduct = :idproduct";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idproduct', $idproduct);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
 
 }
