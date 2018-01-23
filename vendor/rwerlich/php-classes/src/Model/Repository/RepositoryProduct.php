@@ -118,7 +118,7 @@ class RepositoryProduct {
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':idproduct', $idproduct);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }

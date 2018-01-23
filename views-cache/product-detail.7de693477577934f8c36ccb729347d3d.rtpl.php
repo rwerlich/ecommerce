@@ -16,7 +16,7 @@
             <div class="col-md-12">
                 <div class="product-content-right">
                     <div class="product-breadcroumb">
-                        <a href="/">Home</a>
+                        <a href="/ecommerce">Home</a>
                         <a href=""><?php echo htmlspecialchars( $product["product"], ENT_COMPAT, 'UTF-8', FALSE ); ?></a>
                     </div>
                     
@@ -44,8 +44,7 @@
                                 </form>   
                                 
                                 <div class="product-inner-category">
-                                    <p>Categorias:<?php $counter1=-1;  if( isset($categories) && ( is_array($categories) || $categories instanceof Traversable ) && sizeof($categories) ) foreach( $categories as $key1 => $value1 ){ $counter1++; ?> <a href="/categories/<?php echo htmlspecialchars( $categories["idcategory"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $categories["category"], ENT_COMPAT, 'UTF-8', FALSE ); ?></a><?php } ?>
-
+                                    <p>Categorias:<?php $counter1=-1;  if( isset($categories) && ( is_array($categories) || $categories instanceof Traversable ) && sizeof($categories) ) foreach( $categories as $key1 => $value1 ){ $counter1++; ?> <a href="/ecommerce/categories/<?php echo htmlspecialchars( $value1["idcategory"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $value1["category"], ENT_COMPAT, 'UTF-8', FALSE ); ?></a><?php } ?>
                                 </div> 
                                 
                                 <div role="tabpanel">

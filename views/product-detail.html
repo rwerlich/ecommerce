@@ -16,7 +16,7 @@
             <div class="col-md-12">
                 <div class="product-content-right">
                     <div class="product-breadcroumb">
-                        <a href="/">Home</a>
+                        <a href="/ecommerce">Home</a>
                         <a href="">{$product.product}</a>
                     </div>
                     
@@ -44,7 +44,7 @@
                                 </form>   
                                 
                                 <div class="product-inner-category">
-                                    <p>Categorias:{loop="$categories"} <a href="/categories/{$categories.idcategory}">{$categories.category}</a>{/loop}
+                                    <p>Categorias:{loop="$categories"} <a href="/ecommerce/categories/{$value.idcategory}">{$value.category}</a>{/loop}
                                 </div> 
                                 
                                 <div role="tabpanel">
