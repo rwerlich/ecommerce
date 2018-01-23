@@ -37,11 +37,11 @@ $app->get('/categories/:idcategory', function($idcategory) {
 });
 
 $app->get('/products/:url', function($url) {
-    
+
     $repositoryProduct = new RepositoryProduct();
     $product = $repositoryProduct->getFromUrl($url);
-        
-    $page = new Page();      
+
+    $page = new Page();
     $page->setTpl("product-detail", array(
         'product' => $product,
         'categories' => $repositoryProduct->getCategories($product['idproduct'])

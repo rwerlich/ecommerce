@@ -55,7 +55,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="copyright">
-                        <p>&copy; 2017 Hcode Treinamentos. <a href="http://www.hcode.com.br" target="_blank">hcode.com.br</a></p>
+                        <p>&copy; <script>document.write(new Date().getFullYear())</script> Rodrigo Werlich. <a href="http://werlich.blog.br" target="_blank">werlich.blog.br</a></p>
                     </div>
                 </div>
                 
