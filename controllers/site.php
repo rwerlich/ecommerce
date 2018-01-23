@@ -47,3 +47,9 @@ $app->get('/products/:url', function($url) {
         'categories' => $repositoryProduct->getCategories($product['idproduct'])
     ));
 });
+
+$app->get('/cart', function() {
+    
+    $page = new Page();
+    $page->setTpl("cart");
+});

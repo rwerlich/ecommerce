@@ -14,6 +14,26 @@ class RepositoryUser {
         $db = "db_ecommerce";
         $this->bd = new \PDO("mysql:host=localhost;dbname={$db}", $dbuser, $pass);
     }
+    
+    public function getFromSession() {
+        $user = new User();
+        if (isset($_SESSION['user'])) {
+            $user = $_SESSION['user'];            
+        } 
+        return $user;
+    }
+    
+    public function checkLogin() {
+        if (isset($_SESSION['user'])) {
+            $user = $_SESSION['user'];
+            if ($user->getAdmin() == 0) {
+                header("Location: /ecommerce/admin/login");
+                exit;
+            }
+        } else {
+            return false;
+        }
+    }
 
     public function login(string $login, string $password) {
         $query = "SELECT * FROM tb_users WHERE login = :login AND password = :password";
