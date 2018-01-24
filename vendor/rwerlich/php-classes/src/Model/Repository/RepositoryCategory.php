@@ -9,7 +9,7 @@ class RepositoryCategory {
     private $bd;
 
     public function __construct() {
-        $this->bd = new \PDO('mysql:host='.HOST.';dbname='.DBNAME.'', DBUSER, PASS);
+        $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
     }
 
     public function listAll() {

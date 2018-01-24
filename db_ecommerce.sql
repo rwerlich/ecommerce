@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.0
+-- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 23-Jan-2018 às 04:14
--- Versão do servidor: 10.1.26-MariaDB
--- PHP Version: 7.1.8
+-- Generation Time: 24-Jan-2018 às 19:44
+-- Versão do servidor: 10.1.28-MariaDB
+-- PHP Version: 7.1.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -50,8 +50,9 @@ CREATE TABLE `tb_carts` (
   `idcart` int(11) NOT NULL,
   `sessionid` varchar(64) NOT NULL,
   `iduser` int(11) DEFAULT NULL,
-  `idaddress` int(11) DEFAULT NULL,
+  `zipcode` char(8) DEFAULT NULL,
   `vlfreight` decimal(10,2) DEFAULT NULL,
+  `nrdays` int(11) DEFAULT NULL,
   `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -176,7 +177,10 @@ INSERT INTO `tb_productscategories` (`idcategory`, `idproduct`) VALUES
 (2, 6),
 (2, 7),
 (3, 9),
-(3, 10);
+(3, 10),
+(3, 6),
+(3, 7),
+(3, 8);
 
 -- --------------------------------------------------------
 
@@ -258,8 +262,7 @@ ALTER TABLE `tb_addresses`
 --
 ALTER TABLE `tb_carts`
   ADD PRIMARY KEY (`idcart`),
-  ADD KEY `FK_carts_users_idx` (`iduser`),
-  ADD KEY `fk_carts_addresses_idx` (`idaddress`);
+  ADD KEY `FK_carts_users_idx` (`iduser`);
 
 --
 -- Indexes for table `tb_cartsproducts`
@@ -323,51 +326,71 @@ ALTER TABLE `tb_userspasswordsrecoveries`
 --
 ALTER TABLE `tb_addresses`
   MODIFY `idaddress` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tb_carts`
 --
 ALTER TABLE `tb_carts`
   MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tb_cartsproducts`
 --
 ALTER TABLE `tb_cartsproducts`
   MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tb_categories`
 --
 ALTER TABLE `tb_categories`
   MODIFY `idcategory` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT for table `tb_orders`
 --
 ALTER TABLE `tb_orders`
   MODIFY `idorder` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tb_ordersstatus`
 --
 ALTER TABLE `tb_ordersstatus`
   MODIFY `idstatus` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `tb_products`
 --
 ALTER TABLE `tb_products`
   MODIFY `idproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
 --
 -- AUTO_INCREMENT for table `tb_users`
 --
 ALTER TABLE `tb_users`
   MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT for table `tb_userslogs`
 --
 ALTER TABLE `tb_userslogs`
   MODIFY `idlog` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tb_userspasswordsrecoveries`
 --
 ALTER TABLE `tb_userspasswordsrecoveries`
-  MODIFY `idrecovery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;COMMIT;
+  MODIFY `idrecovery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Limitadores para a tabela `tb_carts`
+--
+ALTER TABLE `tb_carts`
+  ADD CONSTRAINT `fk_carts_users` FOREIGN KEY (`iduser`) REFERENCES `tb_users` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
