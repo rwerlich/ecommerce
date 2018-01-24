@@ -1,6 +1,6 @@
 <?php
 
-$dbuser = "root";
-$pass = "";
-$db = "db_ecommerce";
-$conn = new PDO("mysql:host=localhost;dbname={$db}", $dbuser, $pass);
+define("DBUSER", "root");
+define("PASS", "");
+define("DBNAME", "db_ecommerce");
+define("HOST", "localhost");

@@ -10,10 +10,7 @@ class RepositoryCart {
     private $bd;    
 
     public function __construct() {
-        $dbuser = "root";
-        $pass = "";
-        $db = "db_ecommerce";
-        $this->bd = new \PDO("mysql:host=localhost;dbname={$db}", $dbuser, $pass);
+        $this->bd = new \PDO('mysql:host='.HOST.';dbname='.DBNAME.'', DBUSER, PASS);
     }
     
     private function getFromSession(){
