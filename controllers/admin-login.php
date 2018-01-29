@@ -23,9 +23,8 @@ $app->get('/admin/logout', function() {
     exit;
 });
 
-$app->get('/admin', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+$app->get('/admin', function() {    
+    RepositoryUser::isAdmin();
     $page = new PageAdmin();
     $page->setTpl("index");
 });

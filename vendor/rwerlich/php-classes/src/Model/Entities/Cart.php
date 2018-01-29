@@ -7,7 +7,8 @@ class Cart{
     private $idcart;
     private $sessionid;
     private $iduser;
-    private $idaddress;
+    private $zipcode;
+    private $nrdays;
     private $vlfreight;
     private $dtregister;
     
@@ -23,8 +24,12 @@ class Cart{
         return $this->iduser;
     }
 
-    function getIdaddress() {
-        return $this->idaddress;
+    function getZipcode() {
+        return $this->zipcode;
+    }
+
+    function getNrdays() {
+        return $this->nrdays;
     }
 
     function getVlfreight() {
@@ -47,8 +52,12 @@ class Cart{
         $this->iduser = $iduser;
     }
 
-    function setIdaddress($idaddress) {
-        $this->idaddress = $idaddress;
+    function setZipcode($zipcode) {
+        $this->zipcode = $zipcode;
+    }
+
+    function setNrdays($nrdays) {
+        $this->nrdays = $nrdays;
     }
 
     function setVlfreight($vlfreight) {
@@ -58,6 +67,8 @@ class Cart{
     function setDtregister($dtregister) {
         $this->dtregister = $dtregister;
     }
+
+
 
 
     

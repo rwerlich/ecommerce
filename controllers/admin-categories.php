@@ -6,8 +6,7 @@ use \Werlich\Model\Repository\RepositoryUser;
 use \Werlich\PageAdmin;
 
 $app->get('/admin/categories', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
 
     $repositoryCategory = new RepositoryCategory();
     $categories = $repositoryCategory->listAll();
@@ -19,15 +18,13 @@ $app->get('/admin/categories', function() {
 });
 
 $app->get('/admin/categories/create', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $page = new PageAdmin();
     $page->setTpl("categories-create");
 });
 
 $app->post('/admin/categories/create', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $category = new Category();
     $category->setCategory($_POST['category']);
@@ -37,8 +34,7 @@ $app->post('/admin/categories/create', function() {
 });
 
 $app->get('/admin/categories/:idcategory/delete', function($idcategory) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $repositoryCategory->delete($idcategory);
     header("Location: /ecommerce/admin/categories");
@@ -46,8 +42,7 @@ $app->get('/admin/categories/:idcategory/delete', function($idcategory) {
 });
 
 $app->get('/admin/categories/:idcategory/products', function($idcategory) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $page = new PageAdmin();
     $page->setTpl("categories-products", array(
@@ -58,8 +53,7 @@ $app->get('/admin/categories/:idcategory/products', function($idcategory) {
 });
 
 $app->get('/admin/categories/:idcategory/products/:idproduct/add', function($idcategory, $idproduct) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $repositoryCategory->insertProduct($idcategory, $idproduct);
     header("Location: /ecommerce/admin/categories/{$idcategory}/products");
@@ -67,8 +61,7 @@ $app->get('/admin/categories/:idcategory/products/:idproduct/add', function($idc
 });
 
 $app->get('/admin/categories/:idcategory/products/:idproduct/remove', function($idcategory, $idproduct) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $repositoryCategory->deleteProduct($idcategory, $idproduct);
     header("Location: /ecommerce/admin/categories/{$idcategory}/products");
@@ -76,8 +69,7 @@ $app->get('/admin/categories/:idcategory/products/:idproduct/remove', function($
 });
 
 $app->get('/admin/categories/:idcategory', function($idcategory) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $page = new PageAdmin();
     $page->setTpl("categories-update", array(
@@ -86,8 +78,7 @@ $app->get('/admin/categories/:idcategory', function($idcategory) {
 });
 
 $app->post('/admin/categories/:idcategory', function($idcategory) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryCategory = new RepositoryCategory();
     $category = new Category();
     $category->setCategory($_POST['category']);

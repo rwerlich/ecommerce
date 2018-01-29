@@ -8,33 +8,40 @@ use \Werlich\Model\Repository\RepositoryUser;
 class RepositoryCart {
     
     private $bd;    
+    const SESSION = "cart";
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
     }
     
-    private function getFromSession(){
-        if(isset($_SESSION['cart']) && (int)$_SESSION['cart']['idcart'] > 0){
-            $cart = $this->get((int)$_SESSION['cart']['idcart']);
+    public static function getFromSession(){
+        $cart = new Cart();
+        $user = new User();
+        
+        if(isset($_SESSION[RepositoryCart::SESSION]) && (int)$_SESSION[RepositoryCart::SESSION]['idcart'] > 0){
+            $cart = $this->get((int)$_SESSION[RepositoryCart::SESSION]['idcart']);
         }else{
             $cart = $this->getFromSessionId();
             if(!(int)$cart["idcart"] > 0){
-                
+                $sessionid = session_id();
+                if(RepositoryUser::checkLogin()){
+                    $user = RepositoryUser::getFromSession();
+                }
                 
                 
             }
         }
+        return $cart;
     }
     
-    public function getFromSessionId() {
+    public function getFromSessionId() {        
         $query = "SELECT * FROM tb_carts WHERE sessionid = :sessionid";
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':sessionid', session_id());
         $result = $stmt->execute();
         if($result > 0 ){
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
-        }
-        
+            return $stmt->fetchObject('\Werlich\Model\Entities\Cart');
+        }        
     }
     
     public function get(int $idcart) {
@@ -42,27 +49,27 @@ class RepositoryCart {
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':idcart', $idcart);
         $result = $stmt->execute();
-        $result = $stmt->execute();
         if($result > 0 ){
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $stmt->fetchObject('\Werlich\Model\Entities\Cart');
         }
     }
+    
+    public function insert(Category $category) {
+        $query = "INSERT INTO tb_carts (category) "
+                . "VALUES (:category)";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':category', $category->getCategory());
+        $stmt->execute();
+        $this->geraMenu();
+    }    
+    
 
     public function listAll() {
         $query = "SELECT * FROM tb_categories ORDER BY idcategory DESC";
         $stmt = $this->bd->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function insert(Category $category) {
-        $query = "INSERT INTO tb_categories (category) "
-                . "VALUES (:category)";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':category', $category->getCategory());
-        $stmt->execute();
-        $this->geraMenu();
-    }
+    }    
 
     public function delete(int $idcategory) {
         $query = "DELETE FROM tb_categories WHERE idcategory = :idcategory";

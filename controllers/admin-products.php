@@ -6,8 +6,8 @@ use \Werlich\Model\Repository\RepositoryUser;
 use \Werlich\PageAdmin;
 
 $app->get('/admin/products', function() {
+    RepositoryUser::isAdmin();
     $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
 
     $repositoryProduct = new RepositoryProduct();
     $products = $repositoryProduct->listAll();
@@ -19,15 +19,13 @@ $app->get('/admin/products', function() {
 });
 
 $app->get('/admin/products/create', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $page = new PageAdmin();
     $page->setTpl("products-create");
 });
 
 $app->post('/admin/products/create', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryProduct = new RepositoryProduct();
     $img = $repositoryProduct->uploadImg($_FILES['imgproduct']);
     $product = new Product();
@@ -39,8 +37,7 @@ $app->post('/admin/products/create', function() {
 });
 
 $app->get('/admin/products/:idproduct/delete', function($idproduct) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryProduct = new RepositoryProduct();
     $repositoryProduct->delete($idproduct);
     header("Location: /ecommerce/admin/products");
@@ -48,8 +45,7 @@ $app->get('/admin/products/:idproduct/delete', function($idproduct) {
 });
 
 $app->get('/admin/products/:idproduct', function($idproduct) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryProduct = new RepositoryProduct();
     $page = new PageAdmin();
     $page->setTpl("products-update", array(
@@ -58,8 +54,7 @@ $app->get('/admin/products/:idproduct', function($idproduct) {
 });
 
 $app->post('/admin/products/:idproduct', function($idproduct) {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->verifyLogin();
+    RepositoryUser::isAdmin();
     $repositoryProduct = new RepositoryProduct();      
     if($_FILES['imgproduct']['name'] != '' && $_FILES['imgproduct']['size'] > 0){
         $img = $repositoryProduct->uploadImg($_FILES['imgproduct']);

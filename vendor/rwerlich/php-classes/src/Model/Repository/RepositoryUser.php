@@ -12,19 +12,30 @@ class RepositoryUser {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
     }
 
-    public function getFromSession() {
+    public static function getFromSession() {
         $user = new User();
-        if ($_SESSION['user']->getIduser() > 0 && $_SESSION['user']->getAdmin() == 0) {
-            $user = $_SESSION['user'];
+        if (isset($_SESSION[User::SESSION]) && $_SESSION[User::SESSION]->getIduser() > 0) {
+            $user = $_SESSION[$user::SESSION];
         }
         return $user;
     }
 
-    public function checkLogin() {
-        if (!isset($_SESSION['user']) || $_SESSION['user'] == NULL || !$_SESSION['user']->getIduser() > 0) {
+    public static function checkLogin() {
+        if (!isset($_SESSION[User::SESSION]) || !$_SESSION[User::SESSION]->getIduser() > 0) {
+            return false;
+        }else{
+            return true;
+        } 
+    }
+    
+    public static function isAdmin() {
+        if (!isset($_SESSION[User::SESSION]) || $_SESSION[User::SESSION] == NULL) {
             header("Location: /ecommerce/admin/login");            
             exit;
-        } 
+        } else if ($_SESSION['user']->getIduser() > 0 && $_SESSION['user']->getAdmin() == 0) {
+            header("Location: /ecommerce/admin/login");
+            exit;
+        }
     }
 
     public function login(string $login, string $password) {
@@ -39,17 +50,7 @@ class RepositoryUser {
         } else {
             $_SESSION['user'] = $user;
         }
-    }
-
-    public function verifyLogin() {        
-        if (!isset($_SESSION['user']) || $_SESSION['user'] == NULL) {
-            header("Location: /ecommerce/admin/login");            
-            exit;
-        } else if ($_SESSION['user']->getIduser() > 0 && $_SESSION['user']->getAdmin() == 0) {
-            header("Location: /ecommerce/admin/login");
-            exit;
-        }
-    }
+    }    
 
     public function listAll() {
         $query = "SELECT * FROM tb_users ORDER BY iduser DESC";

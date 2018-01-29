@@ -4,6 +4,8 @@ namespace Werlich\Model\Entities;
 
 
 class User {
+    
+    const SESSION = 'user';
 
     private $iduser;
     private $login;

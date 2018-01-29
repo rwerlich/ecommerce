@@ -76,7 +76,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="logo">
-                        <h1><a href="#"><img src="/ecommerce/assets/site/img/php-min.png"></a></h1>
+                        <h1><a href="/ecommerce/"><img src="/ecommerce/assets/site/img/php-min.png"></a></h1>
                     </div>
                 </div>
                 
