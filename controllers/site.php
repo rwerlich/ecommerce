@@ -3,6 +3,7 @@
 use \Werlich\Page;
 use \Werlich\Model\Repository\RepositoryProduct;
 use \Werlich\Model\Repository\RepositoryCategory;
+use \Werlich\Model\Repository\RepositoryCart;
 
 $app->get('/', function() {
     $repositoryProduct = new RepositoryProduct();
@@ -50,6 +51,7 @@ $app->get('/products/:url', function($url) {
 
 $app->get('/cart', function() {
     
+    $cart = RepositoryCart::getFromSession();    
     $page = new Page();
     $page->setTpl("cart");
 });

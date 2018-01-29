@@ -3,12 +3,12 @@
 namespace Werlich\Model\Repository;
 
 use \Werlich\Model\Entities\Cart;
+use \Werlich\Model\Entities\User;
 use \Werlich\Model\Repository\RepositoryUser;
 
 class RepositoryCart {
     
-    private $bd;    
-    const SESSION = "cart";
+    private $bd;        
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
@@ -18,30 +18,52 @@ class RepositoryCart {
         $cart = new Cart();
         $user = new User();
         
-        if(isset($_SESSION[RepositoryCart::SESSION]) && (int)$_SESSION[RepositoryCart::SESSION]['idcart'] > 0){
-            $cart = $this->get((int)$_SESSION[RepositoryCart::SESSION]['idcart']);
+        if(isset($_SESSION[Cart::SESSION]) && (int)$_SESSION[Cart::SESSION]['idcart'] > 0){
+            $cart = $this->get((int)$_SESSION[Cart::SESSION]['idcart']);
         }else{
-            $cart = $this->getFromSessionId();
-            if(!(int)$cart["idcart"] > 0){
+            $cart = RepositoryCart::getFromSessionId();
+            if(!(int)$cart['idcart'] > 0){
                 $sessionid = session_id();
                 if(RepositoryUser::checkLogin()){
                     $user = RepositoryUser::getFromSession();
                 }
-                
+                RepositoryCart::initializeCart($sessionid, $user->getIduser());
+                RepositoryCart::setToSession($sessionid, $user->getIduser());
                 
             }
         }
         return $cart;
     }
     
-    public function getFromSessionId() {        
+    public static function getFromSessionId() {        
         $query = "SELECT * FROM tb_carts WHERE sessionid = :sessionid";
-        $stmt = $this->bd->prepare($query);
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
         $stmt->bindValue(':sessionid', session_id());
         $result = $stmt->execute();
         if($result > 0 ){
-            return $stmt->fetchObject('\Werlich\Model\Entities\Cart');
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         }        
+    }
+    
+    public static function initializeCart($session, $iduser) {
+        $query = "INSERT INTO tb_carts (sessionid, iduser) "
+                . "VALUES (:sessionid, :iduser)";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->bindValue(':sessionid', $session);
+        $stmt->bindValue(':iduser', $iduser);
+        $stmt->execute();
+    }    
+    
+    public static function setToSession($session, $iduser) {
+        $query = "SELECT * FROM tb_carts WHERE sessionid = :sessionid AND iduser = :iduser";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->bindValue(':sessionid', $session);
+        $stmt->bindValue(':iduser', $iduser);
+        $stmt->execute();
+        $_SESSION[Cart::SESSION] = $stmt->fetch(\PDO::FETCH_ASSOC);
     }
     
     public function get(int $idcart) {

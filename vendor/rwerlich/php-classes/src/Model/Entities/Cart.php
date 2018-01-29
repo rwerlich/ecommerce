@@ -4,6 +4,8 @@ namespace Werlich\Model\Entities;
 
 class Cart{
     
+    const SESSION = "cart";
+    
     private $idcart;
     private $sessionid;
     private $iduser;
