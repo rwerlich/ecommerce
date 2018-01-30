@@ -49,9 +49,40 @@ $app->get('/products/:url', function($url) {
     ));
 });
 
-$app->get('/cart', function() {
-    
+$app->get('/cart', function() {    
     $cart = RepositoryCart::getFromSession();    
+    $repositoryCart = new RepositoryCart();
+    
     $page = new Page();
-    $page->setTpl("cart");
+    $page->setTpl("cart", [
+        'cart' => $cart,
+        'products' => $repositoryCart->getProducts($cart['idcart'])
+    ]);
+});
+
+$app->get('/cart/:idproduct/add', function(int $idproduct) {
+    $cart = RepositoryCart::getFromSession();    
+    $repositoryCart = new RepositoryCart();
+    $qtd = (isset($_GET['qtd'])) ? (int)$_GET['qtd'] : 1;
+    for($i = 0; $i < $qtd; $i++){
+        $repositoryCart->addProduct($idproduct, $cart['idcart']);
+    }    
+    header("Location: /ecommerce/cart");
+    exit;
+});
+
+$app->get('/cart/:idproduct/minus', function(int $idproduct) {
+    $cart = RepositoryCart::getFromSession();    
+    $repositoryCart = new RepositoryCart();
+    $repositoryCart->removeProduct($idproduct, $cart['idcart']);
+    header("Location: /ecommerce/cart");
+    exit;
+});
+
+$app->get('/cart/:idproduct/remove', function(int $idproduct) {
+    $cart = RepositoryCart::getFromSession();    
+    $repositoryCart = new RepositoryCart();
+    $repositoryCart->removeProduct($idproduct, $cart['idcart'], true);
+    header("Location: /ecommerce/cart");
+    exit;
 });

@@ -90,7 +90,7 @@
                             <div class="product-f-image">
                                 <img src="/ecommerce/assets/site/img/products/<?php echo htmlspecialchars( $value1["imgproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" alt="">
                                 <div class="product-hover">
-                                    <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Comprar</a>
+                                    <a href="/ecommerce/cart/<?php echo htmlspecialchars( $value1["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>/add" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Comprar</a>
                                     <a href="/ecommerce/products/<?php echo htmlspecialchars( $value1["url"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" class="view-details-link"><i class="fa fa-link"></i> Ver Detalhes</a>
                                 </div>
                             </div>
