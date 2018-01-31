@@ -10,6 +10,7 @@ use \Werlich\Model\Repository\RepositoryUser;
 class RepositoryCart {
 
     private $bd;
+    const SESSION_ERROR = 'cartError';
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
@@ -84,6 +85,7 @@ class RepositoryCart {
         $stmt->bindValue(':idproduct', $idproduct);
         $stmt->bindValue(':idcart', $cart);
         $stmt->execute();
+        $this->updateFrete($cart);
     }
 
     public function removeProduct(int $idproduct, int $cart, $all = false) {
@@ -96,6 +98,7 @@ class RepositoryCart {
         $stmt->bindValue(':idproduct', $idproduct);
         $stmt->bindValue(':idcart', $cart);
         $stmt->execute();
+        $this->updateFrete($cart);
     }
 
     public function getProducts(int $cart) {
@@ -111,89 +114,114 @@ class RepositoryCart {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function listAll() {
-        $query = "SELECT * FROM tb_categories ORDER BY idcategory DESC";
+    public function getProductsTotal(int $cart) {
+        $query = "SELECT SUM(vlprice) AS vlprice, SUM(vlwidth) AS vlwidth, SUM(vlheight) AS vlheight, SUM(vllength) AS vllength, SUM(vlweight) AS vlweight, COUNT(*) AS nrqtd 
+                    FROM tb_products AS a 
+                    INNER JOIN tb_cartsproducts AS b ON a.idproduct = b.idproduct 
+                    WHERE b.idcart = :idcart AND b.dtremoved IS NULL
+                    ";
         $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idcart', $cart);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+    
+    public function calcFrete(int $cart, String $zipcode) {
+        $cep = preg_replace("/[^0-9]/", "", $zipcode);
+        $totals = $this->getProductsTotal($cart);
+        if($totals['nrqtd'] > 0){
+            if($totals['vlheight'] < 2) $totals['vlheight'] = 2;
+            if($totals['vllength'] < 16) $totals['vllength'] = 16;
+            $qs = http_build_query([
+               'nCdEmpresa' => '', 
+               'sDsSenha' => '', 
+               'nCdServico' => '40010', 
+               'sCepOrigem' => '88103050', 
+               'sCepDestino' => $cep, 
+               'nVlPeso' => $totals['vlweight'], 
+               'nCdFormato' => '1', 
+               'nVlComprimento' => $totals['vllength'], 
+               'nVlAltura' => $totals['vlheight'], 
+               'nVlLargura' => $totals['vlwidth'], 
+               'nVlDiametro' => '1', 
+               'sCdMaoPropria' => 'N', 
+               'nVlValorDeclarado' => $totals['vlprice'], 
+               'sCdAvisoRecebimento' => 'S'
+            ]);
+            $xml = simplexml_load_file('http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?'.$qs);
+            $result = $xml->Servicos->cServico;            
+            if($result->MsgErro != ''){
+                RepositoryCart::setMsgError($result->MsgErro);
+            }else{
+                 RepositoryCart::clearMsgError();
+            }            
+            $nrdays = $result->PrazoEntrega;
+            $vlfrete = RepositoryCart::formatValueToDecimal($result->Valor); 
+            $this->saveFrete($cart, $vlfrete, $nrdays,$cep);
+        }else{
+            
+        }        
+    }
+    
+    public function saveFrete(int $cart, $vlfrete, $nrdays, $cep) {        
+        $query = "UPDATE tb_carts SET zipcode = :zipcode, vlfreight = :vlfreight, nrdays = :nrdays "
+                . "WHERE idcart = :idcart ";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':zipcode', $cep);
+        $stmt->bindValue(':vlfreight', $vlfrete);
+        $stmt->bindValue(':nrdays', $nrdays);
+        $stmt->bindValue(':idcart', $cart);
+        $stmt->execute();
+        $this->updateTotal($cart);
+    }
+    
+    public function updateTotal(int $cart) { 
+        $vlfrete = $this->find($cart);
+        $totals = $this->getProductsTotal($cart);
+        $query = "UPDATE tb_carts SET vltotal = :vltotal, vlsubtotal = :vlsubtotal "
+                . "WHERE idcart = :idcart ";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':vlsubtotal', $totals['vlprice']);
+        $stmt->bindValue(':vltotal', $totals['vlprice'] + $vlfrete['vlfreight']);
+        $stmt->bindValue(':idcart', $cart);
+        $stmt->execute();
+    }
+    
+    public function updateFrete(int $cart) {
+        $c = $this->find($cart);
+        if($c['zipcode'] != ''){
+            $this->calcFrete($cart, $c['zipcode']);
+        }             
+        $this->updateTotal($cart);
+    }
+    
+    public static function formatValueToDecimal($value):float{
+        $value = str_replace('.', '', $value);
+        return str_replace(',', '.', $value);
+    }
+    
+    public static function setMsgError($msg){
+        $_SESSION[RepositoryCart::SESSION_ERROR] = $msg;
     }
 
-    public function delete(int $idcategory) {
-        $query = "DELETE FROM tb_categories WHERE idcategory = :idcategory";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':idcategory', $idcategory);
-        $stmt->execute();
-        $this->geraMenu();
+    public static function getMsgError(){
+        $msg = (isset($_SESSION[RepositoryCart::SESSION_ERROR])) ? $_SESSION[RepositoryCart::SESSION_ERROR] : '';
+        RepositoryCart::clearMsgError();
+        return $msg;
     }
 
-    public function find(int $idcategory) {
-        $query = "SELECT * FROM tb_categories WHERE idcategory = :idcategory";
+    public static function clearMsgError(){
+        $_SESSION[RepositoryCart::SESSION_ERROR] = NULL;
+    }    
+
+    public function find(int $idcart) {
+        $query = "SELECT * FROM tb_carts WHERE idcart = :idcart";
         $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':idcategory', $idcategory);
+        $stmt->bindValue(':idcart', $idcart);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function update(Category $category) {
-        $query = "UPDATE tb_categories SET
-                    category = :category
-                  WHERE idcategory = :idcategory";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':category', $category->getCategory());
-        $stmt->bindValue(':idcategory', $category->getIdcategory());
-        $stmt->execute();
-        $this->geraMenu();
-    }
-
-    private function geraMenu() {
-        $categories = $this->listAll();
-        $html = [];
-        foreach ($categories as $row) {
-            array_push($html, "<li><a href='/ecommerce/categories/{$row['idcategory']}'>{$row['category']}</a></li>");
-        }
-        file_put_contents("{$_SERVER['DOCUMENT_ROOT']}/ecommerce/views/categories-menu.html", implode('', $html));
-    }
-
-    public function deleteProduct(int $idcategory, int $idproduct) {
-        $query = "DELETE FROM tb_productscategories WHERE idcategory = :idcategory AND idproduct = :idproduct";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':idcategory', $idcategory);
-        $stmt->bindValue(':idproduct', $idproduct);
-        $stmt->execute();
-        $this->geraMenu();
-    }
-
-    public function insertProduct(int $idcategory, int $idproduct) {
-        $query = "INSERT INTO tb_productscategories (idcategory, idproduct) "
-                . "VALUES (:idcategory, :idproduct)";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':idcategory', $idcategory);
-        $stmt->bindValue(':idproduct', $idproduct);
-        $stmt->execute();
-        $this->geraMenu();
-    }
-
-    public function getProductsPage(int $page, int $itens, $idcategory) {
-
-        $start = ($page - 1) * $itens;
-
-        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM tb_products as p INNER JOIN tb_productscategories as b ON p.idproduct = b.idproduct "
-                . "INNER JOIN tb_categories as c ON c.idcategory = b.idcategory WHERE c.idcategory = :idcategory LIMIT {$start}, {$itens}";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':idcategory', $idcategory);
-        $stmt->execute();
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $query = "SELECT FOUND_ROWS() as total";
-        $stmt = $this->bd->prepare($query);
-        $stmt->execute();
-        $total = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return [
-            'data' => $results,
-            'total' => $total[0]['total'],
-            'pages' => ceil($total[0]['total'] / $itens)
-        ];
-    }
+    
 
 }

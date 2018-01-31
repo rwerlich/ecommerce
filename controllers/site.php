@@ -56,7 +56,8 @@ $app->get('/cart', function() {
     $page = new Page();
     $page->setTpl("cart", [
         'cart' => $cart,
-        'products' => $repositoryCart->getProducts($cart['idcart'])
+        'products' => $repositoryCart->getProducts($cart['idcart']),
+        'error' => RepositoryCart::getMsgError()
     ]);
 });
 
@@ -83,6 +84,14 @@ $app->get('/cart/:idproduct/remove', function(int $idproduct) {
     $cart = RepositoryCart::getFromSession();    
     $repositoryCart = new RepositoryCart();
     $repositoryCart->removeProduct($idproduct, $cart['idcart'], true);
+    header("Location: /ecommerce/cart");
+    exit;
+});
+
+$app->post('/cart/freight', function() {    
+    $cart = RepositoryCart::getFromSession();    
+    $repositoryCart = new RepositoryCart();
+    $repositoryCart->calcFrete($cart['idcart'], $_POST['zipcode']);
     header("Location: /ecommerce/cart");
     exit;
 });
