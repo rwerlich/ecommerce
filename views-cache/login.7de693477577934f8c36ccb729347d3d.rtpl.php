@@ -16,7 +16,17 @@
     <div class="container">
         <div class="row">                
             <div class="col-md-6">
-                <form action="/login" id="login-form-wrap" class="login" method="post">
+                
+                <?php if( $error != '' ){ ?>
+
+                <div class="alert alert-danger">
+                    <?php echo htmlspecialchars( $error, ENT_COMPAT, 'UTF-8', FALSE ); ?>
+
+                </div>
+                <?php } ?>
+
+                
+                <form action="/ecommerce/login" id="login-form-wrap" class="login" method="post">
                     <h2>Acessar</h2>
                     <p class="form-row form-row-first">
                         <label for="login">E-mail <span class="required">*</span>

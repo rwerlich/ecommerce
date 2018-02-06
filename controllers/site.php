@@ -113,11 +113,18 @@ $app->get('/checkout', function() {
 
 $app->get('/login', function() {  
     $page = new Page();
-    $page->setTpl("login");
+    $page->setTpl("login",[
+        'error' => RepositoryUser::getMsgError()
+    ]);
 });
 
 $app->post('/login', function() {  
-    RepositoryUser::login($_POST["deslogin"], $_POST["despassword"]);
+    try{
+        RepositoryUser::login($_POST["login"], $_POST["password"]);
+    } catch (Exception $ex) {
+        RepositoryUser::setMsgError($ex->getMessage());
+    }
+    
     header("Location: /ecommerce/checkout");
     exit;
 });
