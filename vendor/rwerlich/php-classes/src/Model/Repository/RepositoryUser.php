@@ -47,7 +47,8 @@ class RepositoryUser implements Session{
 
     public static function login(string $login, string $password) {
         $query = "SELECT * FROM tb_users WHERE login = :login AND password = :password";
-        $stmt = $this->bd->prepare($query);
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
         $stmt->bindValue(':login', $login);
         $stmt->bindValue(':password', md5($password));
         $stmt->execute();

@@ -101,7 +101,7 @@ $app->post('/cart/freight', function() {
 $app->get('/checkout', function() {    
     RepositoryUser::checkLogin(true);
     $cart = RepositoryCart::getFromSession();    
-    #$repositoryCart = new RepositoryCart();
+    $repositoryCart = new RepositoryCart();
     
     $page = new Page();
     $page->setTpl("cart", [
