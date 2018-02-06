@@ -11,8 +11,7 @@ $app->get('/admin/login', function() {
 });
 
 $app->post('/admin/login', function() {
-    $repositoryUser = new RepositoryUser();
-    $repositoryUser->login($_POST["deslogin"], $_POST["despassword"]);
+    RepositoryUser::login($_POST["deslogin"], $_POST["despassword"]);
     header("Location: /ecommerce/admin");
     exit;
 });

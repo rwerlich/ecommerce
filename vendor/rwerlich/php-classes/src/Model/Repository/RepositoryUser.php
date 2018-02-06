@@ -3,10 +3,12 @@
 namespace Werlich\Model\Repository;
 
 use \Werlich\Model\Entities\User;
+use \Werlich\Interfaces\Session;
 
-class RepositoryUser {
+class RepositoryUser implements Session{
 
     private $bd;
+    const SESSION_ERROR = 'userError';
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
@@ -20,13 +22,18 @@ class RepositoryUser {
         return $user;
     }
 
-    public static function checkLogin() {
+    public static function checkLogin($needLogin = false) {
+        if ($needLogin && (!isset($_SESSION[User::SESSION]) || !$_SESSION[User::SESSION]->getIduser() > 0)){
+            header("Location: /ecommerce/login");            
+            exit;
+        }
         if (!isset($_SESSION[User::SESSION]) || !$_SESSION[User::SESSION]->getIduser() > 0) {
             return false;
         }else{
             return true;
         } 
     }
+    
     
     public static function isAdmin() {
         if (!isset($_SESSION[User::SESSION]) || $_SESSION[User::SESSION] == NULL) {
@@ -38,7 +45,7 @@ class RepositoryUser {
         }
     }
 
-    public function login(string $login, string $password) {
+    public static function login(string $login, string $password) {
         $query = "SELECT * FROM tb_users WHERE login = :login AND password = :password";
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':login', $login);
@@ -106,5 +113,19 @@ class RepositoryUser {
         $stmt->bindValue(':iduser', $iduser);
         $stmt->execute();
     }
+    
+    public static function setMsgError($msg){
+        $_SESSION[RepositoryUser::SESSION_ERROR] = $msg;
+    }
+
+    public static function getMsgError(){
+        $msg = (isset($_SESSION[RepositoryUser::SESSION_ERROR])) ? $_SESSION[RepositoryUser::SESSION_ERROR] : '';
+        RepositoryUser::clearMsgError();
+        return $msg;
+    }
+
+    public static function clearMsgError(){
+        $_SESSION[RepositoryUser::SESSION_ERROR] = NULL;
+    }      
 
 }

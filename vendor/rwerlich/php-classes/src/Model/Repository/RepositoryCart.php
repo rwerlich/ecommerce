@@ -3,11 +3,11 @@
 namespace Werlich\Model\Repository;
 
 use \Werlich\Model\Entities\Cart;
-use Werlich\Model\Entities\Product;
 use \Werlich\Model\Entities\User;
 use \Werlich\Model\Repository\RepositoryUser;
+use \Werlich\Interfaces\Session;
 
-class RepositoryCart {
+class RepositoryCart implements Session{
 
     private $bd;
     const SESSION_ERROR = 'cartError';
@@ -195,6 +195,14 @@ class RepositoryCart {
         $this->updateTotal($cart);
     }
     
+    public function find(int $idcart) {
+        $query = "SELECT * FROM tb_carts WHERE idcart = :idcart";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':idcart', $idcart);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+    
     public static function formatValueToDecimal($value):float{
         $value = str_replace('.', '', $value);
         return str_replace(',', '.', $value);
@@ -212,16 +220,6 @@ class RepositoryCart {
 
     public static function clearMsgError(){
         $_SESSION[RepositoryCart::SESSION_ERROR] = NULL;
-    }    
-
-    public function find(int $idcart) {
-        $query = "SELECT * FROM tb_carts WHERE idcart = :idcart";
-        $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':idcart', $idcart);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
-
-    
+    }      
 
 }

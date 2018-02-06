@@ -4,6 +4,8 @@ use \Werlich\Page;
 use \Werlich\Model\Repository\RepositoryProduct;
 use \Werlich\Model\Repository\RepositoryCategory;
 use \Werlich\Model\Repository\RepositoryCart;
+use \Werlich\Model\Repository\RepositoryAddress;
+use \Werlich\Model\Repository\RepositoryUser;
 
 $app->get('/', function() {
     $repositoryProduct = new RepositoryProduct();
@@ -93,5 +95,29 @@ $app->post('/cart/freight', function() {
     $repositoryCart = new RepositoryCart();
     $repositoryCart->calcFrete($cart['idcart'], $_POST['zipcode']);
     header("Location: /ecommerce/cart");
+    exit;
+});
+
+$app->get('/checkout', function() {    
+    RepositoryUser::checkLogin(true);
+    $cart = RepositoryCart::getFromSession();    
+    #$repositoryCart = new RepositoryCart();
+    
+    $page = new Page();
+    $page->setTpl("cart", [
+        'cart' => $cart,
+        'products' => $repositoryCart->getProducts($cart['idcart']),
+        'error' => RepositoryCart::getMsgError()
+    ]);
+});
+
+$app->get('/login', function() {  
+    $page = new Page();
+    $page->setTpl("login");
+});
+
+$app->post('/login', function() {  
+    RepositoryUser::login($_POST["deslogin"], $_POST["despassword"]);
+    header("Location: /ecommerce/checkout");
     exit;
 });
