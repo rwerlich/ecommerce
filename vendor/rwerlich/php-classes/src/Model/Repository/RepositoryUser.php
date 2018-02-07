@@ -1,14 +1,18 @@
 <?php
 
+//decode inserir
+//encode visualizar
+
 namespace Werlich\Model\Repository;
 
 use \Werlich\Model\Entities\User;
-use \Werlich\Interfaces\Session;
+use \Werlich\Interfaces\SessionMsgs;
 
-class RepositoryUser implements Session{
+class RepositoryUser implements SessionMsgs{
 
     private $bd;
     const SESSION_ERROR = 'userError';
+    const SESSION_ERROR_REGISTER = 'registerError';
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
@@ -58,7 +62,21 @@ class RepositoryUser implements Session{
         } else {
             $_SESSION['user'] = $user;
         }
-    }    
+    }   
+    
+    public static function checkLoginExist(string $login) {
+        $query = "SELECT * FROM tb_users WHERE login = :login ";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->bindValue(':login', $login);
+        $stmt->execute();
+        $user = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return (count($user) > 0);
+    }  
+    
+    public static function logout() {
+        $_SESSION['user'] = NULL;
+    }
 
     public function listAll() {
         $query = "SELECT * FROM tb_users ORDER BY iduser DESC";
@@ -127,6 +145,20 @@ class RepositoryUser implements Session{
 
     public static function clearMsgError(){
         $_SESSION[RepositoryUser::SESSION_ERROR] = NULL;
-    }      
+    } 
+    
+    public static function setMsgErrorRegister($msg){
+        $_SESSION[RepositoryUser::SESSION_ERROR_REGISTER] = $msg;
+    }
+
+    public static function getMsgErrorRegister(){
+        $msg = (isset($_SESSION[RepositoryUser::SESSION_ERROR_REGISTER])) ? $_SESSION[RepositoryUser::SESSION_ERROR_REGISTER] : '';
+        RepositoryUser::clearMsgErrorRegister();
+        return $msg;
+    }
+
+    public static function clearMsgErrorRegister(){
+        $_SESSION[RepositoryUser::SESSION_ERROR_REGISTER] = NULL;
+    } 
 
 }

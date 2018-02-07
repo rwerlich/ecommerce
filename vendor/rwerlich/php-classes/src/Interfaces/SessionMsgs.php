@@ -2,7 +2,7 @@
 
 namespace Werlich\Interfaces;
 
-interface Session{
+interface SessionMsgs{
     
     public static function getMsgError();
     public static function setMsgError($msg);

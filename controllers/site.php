@@ -1,6 +1,7 @@
 <?php
 
 use \Werlich\Page;
+use \Werlich\Model\Entities\User;
 use \Werlich\Model\Repository\RepositoryProduct;
 use \Werlich\Model\Repository\RepositoryCategory;
 use \Werlich\Model\Repository\RepositoryCart;
@@ -100,7 +101,7 @@ $app->post('/cart/freight', function() {
 
 $app->get('/checkout', function() {    
     RepositoryUser::checkLogin(true);
-    $cart = RepositoryCart::getFromSession();    
+    $cart = RepositoryCart::getFromSession();       
     $repositoryCart = new RepositoryCart();
     
     $page = new Page();
@@ -114,7 +115,11 @@ $app->get('/checkout', function() {
 $app->get('/login', function() {  
     $page = new Page();
     $page->setTpl("login",[
-        'error' => RepositoryUser::getMsgError()
+        'error' => RepositoryUser::getMsgError(),
+        'errorRegister' => RepositoryUser::getMsgErrorRegister(),
+        'registerValues' => (isset($_SESSION['registerValues']) ? $_SESSION['registerValues'] : [
+            'nome' => '', 'email' => '', 'phone' => ''
+        ])
     ]);
 });
 
@@ -125,6 +130,44 @@ $app->post('/login', function() {
         RepositoryUser::setMsgError($ex->getMessage());
     }
     
+    header("Location: /ecommerce/checkout");
+    exit;
+});
+
+$app->get('/logout', function() {  
+    RepositoryUser::logout();
+    header("Location: /ecommerce/login");
+    exit;
+});
+
+$app->post('/register', function() {
+    $_SESSION['registerValues'] = $_POST;
+    if(!isset($_POST['nome']) || strlen(trim($_POST['nome'])) == 0){
+        RepositoryUser::setMsgErrorRegister('Preencha o campo nome.');
+        header("Location: /ecommerce/login");
+        exit;
+    }
+    if(!isset($_POST['email']) || strlen(trim($_POST['email'])) == 0){
+        RepositoryUser::setMsgErrorRegister('Preencha o campo e-mail.');
+        header("Location: /ecommerce/login");
+        exit;
+    }
+    if(!isset($_POST['password']) || strlen(trim($_POST['password'])) == 0){
+        RepositoryUser::setMsgErrorRegister('Preencha o campo senha.');
+        header("Location: /ecommerce/login");
+        exit;
+    }
+    if(RepositoryUser::checkLoginExist($_POST['email'])){
+        RepositoryUser::setMsgErrorRegister('Este endereço de e-mail já esta sendo utilizado por outro usuário.');
+        header("Location: /ecommerce/login");
+        exit;
+    }
+    $repositoryUser = new RepositoryUser();    
+    $admin = 0;
+    $user = new User();
+    $user->setAtributes('', $_POST['email'], md5($_POST['password']), $admin, $_POST['nome'], $_POST['email'], $_POST['phone']);
+    $repositoryUser->insert($user);
+    RepositoryUser::login($_POST['email'], $_POST['password']);
     header("Location: /ecommerce/checkout");
     exit;
 });

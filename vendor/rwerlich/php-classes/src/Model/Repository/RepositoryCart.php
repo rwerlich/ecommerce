@@ -5,9 +5,9 @@ namespace Werlich\Model\Repository;
 use \Werlich\Model\Entities\Cart;
 use \Werlich\Model\Entities\User;
 use \Werlich\Model\Repository\RepositoryUser;
-use \Werlich\Interfaces\Session;
+use \Werlich\Interfaces\SessionMsgs;
 
-class RepositoryCart implements Session{
+class RepositoryCart implements SessionMsgs{
 
     private $bd;
     const SESSION_ERROR = 'cartError';
@@ -21,7 +21,7 @@ class RepositoryCart implements Session{
         $user = new User();
 
         if (isset($_SESSION[Cart::SESSION]) && (int) $_SESSION[Cart::SESSION]['idcart'] > 0) {
-            $cart = $this->get((int) $_SESSION[Cart::SESSION]['idcart']);
+            $cart = RepositoryCart::get((int) $_SESSION[Cart::SESSION]['idcart']);
         } else {
             $cart = RepositoryCart::getFromSessionId();
             if (!(int) $cart['idcart'] > 0) {
@@ -68,13 +68,14 @@ class RepositoryCart implements Session{
         $_SESSION[Cart::SESSION] = $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function get(int $idcart) {
+    public static function get(int $idcart) {
         $query = "SELECT * FROM tb_carts WHERE idcart = :idcart";
-        $stmt = $this->bd->prepare($query);
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
         $stmt->bindValue(':idcart', $idcart);
         $result = $stmt->execute();
         if ($result > 0) {
-            return $stmt->fetchObject('\Werlich\Model\Entities\Cart');
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
     }
 

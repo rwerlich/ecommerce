@@ -17,7 +17,7 @@ $app->post('/admin/login', function() {
 });
 
 $app->get('/admin/logout', function() {
-    $_SESSION['user'] = NULL;
+    RepositoryUser::logout();
     header("Location: /ecommerce/admin/login");
     exit;
 });
