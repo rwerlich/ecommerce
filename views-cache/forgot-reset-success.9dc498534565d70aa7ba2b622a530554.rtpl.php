@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Login</title>
+  <title>Ecommerce | Reset Password</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -14,8 +14,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/ecommerce/assets/admin/dist/css/AdminLTE.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="/ecommerce/assets/admin/plugins/iCheck/square/blue.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -24,54 +22,26 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
+<body class="hold-transition lockscreen">
+<!-- Automatic element centering -->
+<div class="lockscreen-wrapper">
+  <div class="lockscreen-logo">
     <b>Ecommerce</b>
   </div>
-  <!-- /.login-logo -->
-  <div class="login-box-body">    
 
-    <form action="/ecommerce/admin/login" method="post">
-      <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="Login" name="deslogin">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password" name="despassword">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="row">        
-        <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
-        </div>
-        <!-- /.col -->
-      </div>
-    </form>
-
-    
-
-    <a href="/ecommerce/login/forgot">Esqueceu a senha?</a><br>
-
-  </div>
-  <!-- /.login-box-body -->
+  <!-- /.lockscreen-item -->
+  <div class="help-block text-center">
+    <div class="callout callout-success">
+      <h4>Senha Alterada!</h4>
+      <p>Tente fazer o login com sua nova senha.<br><a href="/ecommerce/admin/login">Clique aqui</a> para fazer o login.</p>
+    </div>
+  </div>  
 </div>
-<!-- /.login-box -->
+<!-- /.center -->
 
 <!-- jQuery 2.2.3 -->
 <script src="/ecommerce/assets/admin/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="/ecommerce/assets/admin/bootstrap/js/bootstrap.min.js"></script>
-<!-- iCheck -->
-<script src="/ecommerce/assets/admin/plugins/iCheck/icheck.min.js"></script>
-<script>
-  $(function () {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' // optional
-    });
-  });
-</script>
 </body>
 </html>

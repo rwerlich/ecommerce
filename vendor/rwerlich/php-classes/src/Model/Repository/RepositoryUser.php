@@ -39,13 +39,16 @@ class RepositoryUser implements SessionMsgs {
         }
     }
     
-    public static function updatePass(String $toke, String $pass) {
-        $query = "SELECT * FROM tb_users WHERE email = :email";
+    public static function updatePass(String $pass, String $token, int $id) {
+        $query = "UPDATE tb_users SET password = :password WHERE iduser = :iduser; "
+                . "UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE token = :token AND iduser = :iduser";
         $bd = RepositoryUser::conecta();
         $stmt = $bd->prepare($query);
-        $stmt->bindValue(':email', $email);
-        $stmt->execute();
-        return $stmt->fetchObject('\Werlich\Model\Entities\User');        
+        $stmt->bindValue(':password', md5($pass));
+        $stmt->bindValue(':iduser', $id);
+        $stmt->bindValue(':token', $token);
+        $stmt->execute();    
+        
     }
     
     public static function getForEmail(String $email) {
@@ -72,7 +75,7 @@ class RepositoryUser implements SessionMsgs {
             $stmt->bindValue(':desip', $_SERVER['REMOTE_ADDR']);
             $stmt->bindValue(':token', $token);
             $stmt->execute();
-            $link = "http://localhost/admin/forgot/reset?code={$hash}";
+            $link = "http://localhost/ecommerce/admin/forgot/reset?code={$token}";
             $mailer = new Mailer($user->getEmail(), $user->getNome(), "Refeinir senha Ecommerce", "forgot", [
                 'name' => $user->getNome(), 'link' => $link
             ]);

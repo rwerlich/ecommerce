@@ -45,16 +45,18 @@ $app->get('/admin/forgot/sent', function() {
 });
 
 $app->get('/admin/forgot/reset', function() {
-    $valido = RepositoryUser::validToken($_GET['code']);    
+    $userValido = RepositoryUser::validToken($_GET['code']);    
     $page = new PageAdmin(["header" => false, "footer" => false]);
-    $page->setTpl("forgot-reset", ["valido" => $valido, "code" => $_GET['code']]);
+    $page->setTpl("forgot-reset", ["valido" => $userValido, "code" => $_GET['code']]);
 });
 
 $app->post('/admin/forgot/reset', function() {
-    $valido = RepositoryUser::validToken($_POST['code']);
-    if(!$valido > 0){
+    $userValido = RepositoryUser::validToken($_POST['code']);
+    if(!$userValido > 0){
         header("Location: /ecommerce/admin/forgot/reset");
         exit;
     }    
-    #RepositoryUser::updatePass($_POST['code'], $_POST['password'], $valido);        
+    RepositoryUser::updatePass($_POST['password'], $_POST['code'], $userValido);
+    $page = new PageAdmin(["header" => false, "footer" => false]);
+    $page->setTpl("forgot-reset-success");    
 });
