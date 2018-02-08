@@ -2,8 +2,6 @@
 
 namespace Werlich;
 
-use Rain\Tpl;
-
 class PageAdmin extends Page {
 
 	
