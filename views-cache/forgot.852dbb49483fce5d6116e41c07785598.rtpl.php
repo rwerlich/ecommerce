@@ -19,7 +19,8 @@
         </tr>
         <tr>
             <td style="padding:32px 0px 27px 27px;" valign="top" >                    
-                Prezado <?php echo htmlspecialchars( $name, ENT_COMPAT, 'UTF-8', FALSE ); ?> <a href="<?php echo htmlspecialchars( $link, ENT_COMPAT, 'UTF-8', FALSE ); ?>" target="_blank">clique aqui</a> para redefinir sua senha em nosso sistema.
+                Prezado <?php echo htmlspecialchars( $name, ENT_COMPAT, 'UTF-8', FALSE ); ?>, <br><br>
+                <a href="<?php echo htmlspecialchars( $link, ENT_COMPAT, 'UTF-8', FALSE ); ?>" target="_blank">Clique aqui</a> para redefinir sua senha em nosso sistema.
             </td>                
         </tr>            
         <tr>

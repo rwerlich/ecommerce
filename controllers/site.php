@@ -171,3 +171,36 @@ $app->post('/register', function() {
     header("Location: /ecommerce/checkout");
     exit;
 });
+
+$app->get('/forgot', function() {
+    $page = new Page();
+    $page->setTpl("forgot");
+});
+
+$app->post('/forgot', function() {
+    RepositoryUser::createForgot($_POST['email'], false);    
+    header("Location: /ecommerce/forgot/sent");
+    exit;
+});
+
+$app->get('/forgot/sent', function() {
+    $page = new Page();
+    $page->setTpl("forgot-sent");
+});
+
+$app->get('/forgot/reset', function() {
+    $userValido = RepositoryUser::validToken($_GET['code']);    
+    $page = new Page();
+    $page->setTpl("forgot-reset", ["valido" => $userValido, "code" => $_GET['code']]);
+});
+
+$app->post('/forgot/reset', function() {
+    $userValido = RepositoryUser::validToken($_POST['code']);
+    if(!$userValido > 0){
+        header("Location: /ecommerce/forgot/reset");
+        exit;
+    }    
+    RepositoryUser::updatePass($_POST['password'], $_POST['code'], $userValido);
+    $page = new Page();
+    $page->setTpl("forgot-reset-success");    
+});

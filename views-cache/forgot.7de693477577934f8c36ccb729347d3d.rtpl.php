@@ -1,4 +1,4 @@
-<div class="product-big-title-area">
+<?php if(!class_exists('Rain\Tpl')){exit;}?><div class="product-big-title-area">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -15,13 +15,12 @@
     <div class="container">
         <div class="row">                
             <div class="col-md-12">
-                {if="$valido > 0"}
-                <form id="login-form-wrap" class="login" method="post" action="/ecommerce/forgot/reset">
-                    <input type="hidden" name="code" value="{$code}">                    
+                <form id="login-form-wrap" class="login" method="post" action="/ecommerce/forgot">
+                    <h2>Recuperar senha</h2>
                     <p class="form-row form-row-first">
-                        <label for="password">Nova senha <span class="required">*</span>
+                        <label for="email">E-mail <span class="required">*</span>
                         </label>
-                        <input type="password" id="password" name="password" class="input-text" style="width:350px">
+                        <input type="email" id="email" name="email" class="input-text" style="width:350px">
                     </p>
                     <div class="clear"></div>
                     <p class="form-row">
@@ -30,13 +29,7 @@
                     </p>
 
                     <div class="clear"></div>
-                </form>  
-                {else}
-                <div class="alert alert-danger">
-                    <h4 class="alert-heading">Código de redefinição inválido!</h4>
-                    <p>O código não existe ou expirou.</p>
-                </div>      
-                {/if}
+                </form>                    
             </div>
         </div>
     </div>

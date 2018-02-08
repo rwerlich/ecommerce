@@ -60,7 +60,7 @@ class RepositoryUser implements SessionMsgs {
         return $stmt->fetchObject('\Werlich\Model\Entities\User');        
     }
 
-    public static function createForgot(String $email) {
+    public static function createForgot(String $email, bool $admin = true) {
         $user = RepositoryUser::getForEmail($email);
         $bd = RepositoryUser::conecta();
         if (is_object($user) && $user->getIduser() > 0) {
@@ -75,7 +75,11 @@ class RepositoryUser implements SessionMsgs {
             $stmt->bindValue(':desip', $_SERVER['REMOTE_ADDR']);
             $stmt->bindValue(':token', $token);
             $stmt->execute();
-            $link = "http://localhost/ecommerce/admin/forgot/reset?code={$token}";
+            if($admin === true){
+                $link = "http://localhost/ecommerce/admin/forgot/reset?code={$token}";
+            }else{
+                $link = "http://localhost/ecommerce/forgot/reset?code={$token}";
+            }            
             $mailer = new Mailer($user->getEmail(), $user->getNome(), "Refeinir senha Ecommerce", "forgot", [
                 'name' => $user->getNome(), 'link' => $link
             ]);
