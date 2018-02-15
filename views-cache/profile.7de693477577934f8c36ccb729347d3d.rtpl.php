@@ -1,4 +1,4 @@
-
+<?php if(!class_exists('Rain\Tpl')){exit;}?>
 <div class="product-big-title-area">
     <div class="container">
         <div class="row">
@@ -16,31 +16,31 @@
     <div class="container">
         <div class="row">                
             <div class="col-md-3">
-                {include="profile-menu"}
+                <?php require $this->checkTemplate("profile-menu");?>
             </div>
             <div class="col-md-9">
-                {if="$profileMsg != ''"}
+                <?php if( $profileMsg != '' ){ ?>
                 <div class="alert alert-success">
-                    {$profileMsg}
+                    <?php echo htmlspecialchars( $profileMsg, ENT_COMPAT, 'UTF-8', FALSE ); ?>
                 </div>
-                {/if}
-                {if="$profileError != ''"}
+                <?php } ?>
+                <?php if( $profileError != '' ){ ?>
                 <div class="alert alert-danger">
-                    {$profileError}
+                    <?php echo htmlspecialchars( $profileError, ENT_COMPAT, 'UTF-8', FALSE ); ?>
                 </div>
-                {/if}                
+                <?php } ?>                
                 <form method="post" action="/ecommerce/profile">
                     <div class="form-group">
                     <label for="desperson">Nome completo</label>
-                    <input type="text" class="form-control" id="desperson" name="nome" placeholder="Digite o nome aqui" value="{$user.nome}">
+                    <input type="text" class="form-control" id="desperson" name="nome" placeholder="Digite o nome aqui" value="<?php echo htmlspecialchars( $user["nome"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
                     </div>
                     <div class="form-group">
                     <label for="desemail">E-mail</label>
-                    <input type="email" class="form-control" id="desemail" name="email" placeholder="Digite o e-mail aqui" value="{$user.email}">
+                    <input type="email" class="form-control" id="desemail" name="email" placeholder="Digite o e-mail aqui" value="<?php echo htmlspecialchars( $user["email"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
                     </div>
                     <div class="form-group">
                     <label for="nrphone">Telefone</label>
-                    <input type="tel" class="form-control" id="nrphone" name="phone" placeholder="Digite o telefone aqui" value="{$user.phone}">
+                    <input type="tel" class="form-control" id="nrphone" name="phone" placeholder="Digite o telefone aqui" value="<?php echo htmlspecialchars( $user["phone"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
                     </div>
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </form>

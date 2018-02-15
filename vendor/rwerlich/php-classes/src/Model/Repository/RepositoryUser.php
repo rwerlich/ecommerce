@@ -14,7 +14,7 @@ class RepositoryUser implements SessionMsgs {
     private $bd;
 
     const SESSION_ERROR = 'userError';
-    const SESSION_ERROR_REGISTER = 'registerError';
+    const SESSION_SUCCESS = 'userSuccess';
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
@@ -216,19 +216,21 @@ class RepositoryUser implements SessionMsgs {
     public static function clearMsgError() {
         $_SESSION[RepositoryUser::SESSION_ERROR] = NULL;
     }
-
-    public static function setMsgErrorRegister($msg) {
-        $_SESSION[RepositoryUser::SESSION_ERROR_REGISTER] = $msg;
+    
+    public static function setMsgSuccess($msg) {
+        $_SESSION[RepositoryUser::SESSION_SUCCESS] = $msg;
     }
 
-    public static function getMsgErrorRegister() {
-        $msg = (isset($_SESSION[RepositoryUser::SESSION_ERROR_REGISTER])) ? $_SESSION[RepositoryUser::SESSION_ERROR_REGISTER] : '';
-        RepositoryUser::clearMsgErrorRegister();
+    public static function getMsgSuccess() {
+        $msg = (isset($_SESSION[RepositoryUser::SESSION_SUCCESS])) ? $_SESSION[RepositoryUser::SESSION_SUCCESS] : '';
+        RepositoryUser::clearMsgSuccess();
         return $msg;
     }
 
-    public static function clearMsgErrorRegister() {
-        $_SESSION[RepositoryUser::SESSION_ERROR_REGISTER] = NULL;
+    public static function clearMsgSuccess() {
+        $_SESSION[RepositoryUser::SESSION_SUCCESS] = NULL;
     }
+
+   
 
 }

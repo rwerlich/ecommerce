@@ -25,6 +25,19 @@ class User {
         $this->email = $email;
         $this->phone = $phone;
     }
+    
+    public static function userToArray($user) {
+        $array = [];
+        $array['iduser'] = $user->getIduser();
+        $array['login'] = $user->getLogin();
+        $array['password'] = $user->getPassword();
+        $array['admin'] = $user->getAdmin();
+        $array['nome'] = $user->getNome();
+        $array['email'] = $user->getEmail();
+        $array['phone'] = $user->getPhone();
+        return $array;
+    }
+
 
     function getIduser() {
         return $this->iduser;

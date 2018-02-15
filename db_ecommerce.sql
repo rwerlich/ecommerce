@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 24-Jan-2018 às 19:44
+-- Generation Time: 15-Fev-2018 às 20:39
 -- Versão do servidor: 10.1.28-MariaDB
 -- PHP Version: 7.1.11
 
@@ -35,8 +35,9 @@ CREATE TABLE `tb_addresses` (
   `complement` varchar(32) DEFAULT NULL,
   `city` varchar(32) NOT NULL,
   `state` varchar(32) NOT NULL,
-  `country` varchar(32) NOT NULL,
-  `nrzipcode` int(11) NOT NULL,
+  `country` varchar(32) NOT NULL DEFAULT 'Brasil',
+  `zipcode` char(8) NOT NULL,
+  `district` varchar(32) NOT NULL,
   `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -51,10 +52,30 @@ CREATE TABLE `tb_carts` (
   `sessionid` varchar(64) NOT NULL,
   `iduser` int(11) DEFAULT NULL,
   `zipcode` char(8) DEFAULT NULL,
-  `vlfreight` decimal(10,2) DEFAULT NULL,
+  `vlfreight` decimal(10,2) DEFAULT '0.00',
   `nrdays` int(11) DEFAULT NULL,
-  `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `vltotal` float NOT NULL,
+  `vlsubtotal` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `tb_carts`
+--
+
+INSERT INTO `tb_carts` (`idcart`, `sessionid`, `iduser`, `zipcode`, `vlfreight`, `nrdays`, `dtregister`, `vltotal`, `vlsubtotal`) VALUES
+(7, 'fcgtsv4gc7g1etbkeo1ek5lsr1', NULL, NULL, NULL, NULL, '2018-01-29 19:01:10', 0, 0),
+(8, 'dshqbnd9bi8f2cuj2jfdt2eidl', NULL, NULL, NULL, NULL, '2018-01-29 19:01:31', 0, 0),
+(9, 'glncfji2j6bcheervnd8m5q8ce', 1, NULL, NULL, NULL, '2018-01-29 19:02:00', 0, 0),
+(10, '90trm89loo6thbq25v7dsv4ba6', NULL, NULL, NULL, NULL, '2018-01-30 15:48:27', 0, 0),
+(11, 'ig5r0retepbqv1fjru7ih11jvs', NULL, '88460000', '40.75', 2, '2018-01-31 17:05:30', 1400.55, 1359.8),
+(12, 'ru75pocankmkjl5k9r09tqs8ns', NULL, '88460000', '58.87', 2, '2018-01-31 18:49:04', 2626.55, 2567.68),
+(13, '9fopt71nn962mptloq5aa38lta', NULL, NULL, '0.00', NULL, '2018-02-06 18:45:10', 0, 0),
+(14, 'r4cgrictjjdj0oj30jjjv74atf', 1, NULL, '0.00', NULL, '2018-02-06 19:42:25', 0, 0),
+(15, 'amaiv31ukkp7prv3rg3d5eptt4', 1, NULL, '0.00', NULL, '2018-02-07 19:01:38', 0, 0),
+(16, 'vvd0bjh30o26isi6f7qv9pp4lv', 1, NULL, '0.00', NULL, '2018-02-08 19:25:57', 0, 0),
+(17, 'u1eq3m5miou19jinm5idvppofq', NULL, NULL, '0.00', NULL, '2018-02-15 16:36:34', 0, 0),
+(18, 'k9r7dhsjo2dr574qqg483msna8', 1, '88460000', '90.18', 2, '2018-02-15 17:46:10', 4672.41, 4582.23);
 
 -- --------------------------------------------------------
 
@@ -69,6 +90,42 @@ CREATE TABLE `tb_cartsproducts` (
   `dtremoved` datetime NOT NULL,
   `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `tb_cartsproducts`
+--
+
+INSERT INTO `tb_cartsproducts` (`idcartproduct`, `idcart`, `idproduct`, `dtremoved`, `dtregister`) VALUES
+(1, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:07:17'),
+(2, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:12:47'),
+(3, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:13:04'),
+(4, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:13:05'),
+(5, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:14:04'),
+(6, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:14:37'),
+(7, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:14:37'),
+(8, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:18:29'),
+(9, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:18:29'),
+(10, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:18:29'),
+(11, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:18:29'),
+(12, 10, 10, '2018-01-30 16:10:51', '2018-01-30 17:18:29'),
+(13, 10, 9, '0000-00-00 00:00:00', '2018-01-30 17:18:48'),
+(14, 10, 9, '0000-00-00 00:00:00', '2018-01-30 18:10:45'),
+(15, 10, 9, '0000-00-00 00:00:00', '2018-01-30 18:10:46'),
+(16, 11, 10, '2018-01-31 16:19:49', '2018-01-31 17:05:35'),
+(17, 11, 8, '2018-01-31 16:20:00', '2018-01-31 17:05:40'),
+(18, 11, 8, '2018-01-31 16:20:00', '2018-01-31 17:05:42'),
+(19, 11, 8, '2018-01-31 16:20:00', '2018-01-31 18:18:47'),
+(20, 11, 10, '2018-01-31 16:35:16', '2018-01-31 18:19:18'),
+(21, 11, 10, '2018-01-31 16:35:58', '2018-01-31 18:23:58'),
+(22, 11, 10, '2018-01-31 16:48:52', '2018-01-31 18:35:42'),
+(23, 11, 10, '0000-00-00 00:00:00', '2018-01-31 18:48:08'),
+(24, 11, 10, '0000-00-00 00:00:00', '2018-01-31 18:48:41'),
+(25, 12, 10, '0000-00-00 00:00:00', '2018-01-31 18:49:11'),
+(26, 12, 7, '0000-00-00 00:00:00', '2018-01-31 18:49:22'),
+(27, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:28:14'),
+(28, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:51:55'),
+(29, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:51:56'),
+(30, 18, 6, '0000-00-00 00:00:00', '2018-02-15 18:52:06');
 
 -- --------------------------------------------------------
 
@@ -204,7 +261,8 @@ CREATE TABLE `tb_users` (
 --
 
 INSERT INTO `tb_users` (`iduser`, `login`, `password`, `admin`, `nome`, `email`, `phone`, `dtregister`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, 'admin', 'admin@admin.com', 123456, '2018-01-20 00:00:21');
+(1, 'rodrigo.werlich@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 0, 'admin', 'rodrigo.werlich@gmail.com', 123456, '2018-01-20 00:00:21'),
+(2, 'teste123@teste123.com', 'e10adc3949ba59abbe56e057f20f883e', 0, 'teste', 'teste123@teste123.com', 0, '2018-02-07 19:40:04');
 
 -- --------------------------------------------------------
 
@@ -234,17 +292,16 @@ CREATE TABLE `tb_userspasswordsrecoveries` (
   `iduser` int(11) NOT NULL,
   `desip` varchar(45) NOT NULL,
   `dtrecovery` datetime DEFAULT NULL,
-  `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `tb_userspasswordsrecoveries`
 --
 
-INSERT INTO `tb_userspasswordsrecoveries` (`idrecovery`, `iduser`, `desip`, `dtrecovery`, `dtregister`) VALUES
-(1, 7, '127.0.0.1', NULL, '2017-03-15 19:10:59'),
-(2, 7, '127.0.0.1', '2017-03-15 13:33:45', '2017-03-15 19:11:18'),
-(3, 7, '127.0.0.1', '2017-03-15 13:37:35', '2017-03-15 19:37:12');
+INSERT INTO `tb_userspasswordsrecoveries` (`idrecovery`, `iduser`, `desip`, `dtrecovery`, `dtregister`, `token`) VALUES
+(13, 1, '::1', '2018-02-08 17:25:54', '2018-02-08 19:21:17', 'hjsv8l8iynEHdgVpB9GKYTFEmRX7XCsU');
 
 --
 -- Indexes for dumped tables
@@ -254,8 +311,7 @@ INSERT INTO `tb_userspasswordsrecoveries` (`idrecovery`, `iduser`, `desip`, `dtr
 -- Indexes for table `tb_addresses`
 --
 ALTER TABLE `tb_addresses`
-  ADD PRIMARY KEY (`idaddress`),
-  ADD KEY `fk_addresses_persons_idx` (`iduser`);
+  ADD PRIMARY KEY (`idaddress`);
 
 --
 -- Indexes for table `tb_carts`
@@ -331,13 +387,13 @@ ALTER TABLE `tb_addresses`
 -- AUTO_INCREMENT for table `tb_carts`
 --
 ALTER TABLE `tb_carts`
-  MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tb_cartsproducts`
 --
 ALTER TABLE `tb_cartsproducts`
-  MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `tb_categories`
@@ -367,7 +423,7 @@ ALTER TABLE `tb_products`
 -- AUTO_INCREMENT for table `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_userslogs`
@@ -379,7 +435,7 @@ ALTER TABLE `tb_userslogs`
 -- AUTO_INCREMENT for table `tb_userspasswordsrecoveries`
 --
 ALTER TABLE `tb_userspasswordsrecoveries`
-  MODIFY `idrecovery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idrecovery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
