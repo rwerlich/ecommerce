@@ -13,6 +13,7 @@ $app->config('debug', true);
 
 require_once("functions.php");
 require_once("controllers/site.php");
+require_once("controllers/site-cart.php");
 require_once("controllers/admin-login.php");
 require_once("controllers/admin-users.php");
 require_once("controllers/admin-categories.php");
