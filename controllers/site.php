@@ -53,6 +53,21 @@ $app->get('/products/:url', function($url) {
     ));
 });
 
+$app->get('/logout', function() {
+    RepositoryUser::logout();
+    header("Location: /ecommerce/login");
+    exit;
+});
+
+$app->get("/login", function(){
+	$page = new Page();
+	$page->setTpl("login", [
+		'error'=>RepositoryUser::getMsgError(),
+		'errorRegister'=>RepositoryUser::getMsgError(),
+		'registerValues'=>(isset($_SESSION['registerValues'])) ? $_SESSION['registerValues'] : ['nome'=>'', 'email'=>'', 'phone'=>'']
+	]);
+});
+
 $app->post('/login', function() {
     try {
         RepositoryUser::login($_POST["login"], $_POST["password"]);
@@ -60,12 +75,6 @@ $app->post('/login', function() {
         RepositoryUser::setMsgError($ex->getMessage());
     }
     header("Location: /ecommerce/checkout");
-    exit;
-});
-
-$app->get('/logout', function() {
-    RepositoryUser::logout();
-    header("Location: /ecommerce/login");
     exit;
 });
 
@@ -170,5 +179,49 @@ $app->post('/profile', function() {
     $repositoryUser = new repositoryUser();
     $repositoryUser->update($user);
     header("Location: /ecommerce/profile");
+    exit;
+});
+
+$app->get("/profile/change-password", function() {
+    RepositoryUser::checkLogin(true);
+    $page = new Page();
+    $page->setTpl("profile-change-password", [
+        'changePassError' => RepositoryUser::getMsgError(),
+        'changePassSuccess' => RepositoryUser::getMsgSuccess()
+    ]);
+});
+$app->post("/profile/change-password", function() {
+    RepositoryUser::checkLogin(true);
+    if (!isset($_POST['current_pass']) || $_POST['current_pass'] === '') {
+        RepositoryUser::setMsgError("Digite a senha atual.");
+        header("Location: /ecommerce/profile/change-password");
+        exit;
+    }
+    if (!isset($_POST['new_pass']) || $_POST['new_pass'] === '') {
+        RepositoryUser::setMsgError("Digite a nova senha.");
+        header("Location: /ecommerce/profile/change-password");
+        exit;
+    }
+    if (!isset($_POST['new_pass_confirm']) || $_POST['new_pass_confirm'] === '') {
+        RepositoryUser::setMsgError("Confirme a nova senha.");
+        header("Location: /ecommerce/profile/change-password");
+        exit;
+    }
+    if ($_POST['current_pass'] === $_POST['new_pass']) {
+        RepositoryUser::setMsgError("A sua nova senha deve ser diferente da atual.");
+        header("Location: /ecommerce/profile/change-password");
+        exit;
+    }
+    $user = RepositoryUser::getFromSession();
+    if (md5($_POST['current_pass']) !== $user->getPassword()) {
+        RepositoryUser::setMsgError("A senha está inválida.");
+        header("Location: /ecommerce/profile/change-password");
+        exit;
+    }
+    $user->setPassword(md5($_POST['new_pass']));
+    $repositoryUser = new RepositoryUser();
+    $repositoryUser->update($user);
+    RepositoryUser::setMsgSuccess("Senha alterada com sucesso.");
+    header("Location: /ecommerce/profile/change-password");
     exit;
 });
