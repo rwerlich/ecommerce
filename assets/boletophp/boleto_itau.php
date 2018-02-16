@@ -16,8 +16,8 @@ $dadosboleto["data_processamento"] = date("d/m/Y"); // Data de processamento do 
 $dadosboleto["valor_boleto"] = $valor_boleto;  // Valor do Boleto - REGRA: Com vírgula e sempre com duas casas depois da virgula
 // DADOS DO SEU CLIENTE
 $dadosboleto["sacado"] = $order['nome'];
-$dadosboleto["endereco1"] = "Endereço - Bairro";
-$dadosboleto["endereco2"] = "Cidade - Estado - País -  CEP: 000-000";
+$dadosboleto["endereco1"] = utf8_encode("{$order['address']}, {$order['number']} - {$order['district']}");
+$dadosboleto["endereco2"] = utf8_encode("{$order['city']} - {$order['state']} - {$order['country']} -  CEP: {$order['zipcode']}");
 // INFORMACOES PARA O CLIENTE
 $dadosboleto["demonstrativo1"] = "Pagamento de Compra na Loja WERLICH E-commerce";
 $dadosboleto["demonstrativo2"] = "Taxa bancária - R$ 0,00";

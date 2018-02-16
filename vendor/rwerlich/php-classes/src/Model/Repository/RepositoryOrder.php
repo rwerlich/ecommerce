@@ -23,6 +23,7 @@ class RepositoryOrder {
                 INNER JOIN tb_ordersstatus AS b ON b.idstatus = a.idstatus
                 INNER JOIN tb_carts AS c ON c.idcart = a.idcart
                 INNER JOIN tb_users AS d ON d.iduser = a.iduser
+                INNER JOIN tb_addresses AS e ON c.idcart = e.idcart
                 WHERE a.idorder = :idorder;";
         $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
         $stmt = $bd->prepare($query);
