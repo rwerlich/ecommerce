@@ -127,6 +127,17 @@ class RepositoryCart implements SessionMsgs{
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
     
+    public function updateZipcode(String $cep, int $cart) { 
+        $vlfrete = $this->find($cart);
+        $totals = $this->getProductsTotal($cart);
+        $query = "UPDATE tb_carts SET zipcode = :zipcode WHERE idcart = :idcart ";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':zipcode', preg_replace("/[^0-9]/", "", $cep));
+        $stmt->bindValue(':idcart', $cart);
+        $stmt->execute();
+        $this->calcFrete($cart, $cep);
+    }
+    
     public function calcFrete(int $cart, String $zipcode) {
         $cep = preg_replace("/[^0-9]/", "", $zipcode);
         $totals = $this->getProductsTotal($cart);

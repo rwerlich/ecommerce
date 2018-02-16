@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 15-Fev-2018 às 20:39
+-- Generation Time: 16-Fev-2018 às 13:50
 -- Versão do servidor: 10.1.28-MariaDB
--- PHP Version: 7.1.11
+-- PHP Version: 7.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -31,15 +31,26 @@ SET time_zone = "+00:00";
 CREATE TABLE `tb_addresses` (
   `idaddress` int(11) NOT NULL,
   `iduser` int(11) NOT NULL,
+  `idcart` int(11) NOT NULL,
   `address` varchar(128) NOT NULL,
   `complement` varchar(32) DEFAULT NULL,
+  `number` varchar(10) NOT NULL,
+  `district` varchar(50) NOT NULL,
   `city` varchar(32) NOT NULL,
   `state` varchar(32) NOT NULL,
   `country` varchar(32) NOT NULL DEFAULT 'Brasil',
   `zipcode` char(8) NOT NULL,
-  `district` varchar(32) NOT NULL,
   `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `tb_addresses`
+--
+
+INSERT INTO `tb_addresses` (`idaddress`, `iduser`, `idcart`, `address`, `complement`, `number`, `district`, `city`, `state`, `country`, `zipcode`, `dtregister`) VALUES
+(1, 1, 19, 'Rua Coletor Irineu Comelli', 'atÃ© 1750/1751', '', 'Centro', 'SÃ£o JosÃ©', 'SC', 'Brasil', '88103050', '2018-02-16 12:40:40'),
+(2, 1, 19, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-16 12:41:35'),
+(3, 1, 19, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-16 12:44:53');
 
 -- --------------------------------------------------------
 
@@ -75,7 +86,8 @@ INSERT INTO `tb_carts` (`idcart`, `sessionid`, `iduser`, `zipcode`, `vlfreight`,
 (15, 'amaiv31ukkp7prv3rg3d5eptt4', 1, NULL, '0.00', NULL, '2018-02-07 19:01:38', 0, 0),
 (16, 'vvd0bjh30o26isi6f7qv9pp4lv', 1, NULL, '0.00', NULL, '2018-02-08 19:25:57', 0, 0),
 (17, 'u1eq3m5miou19jinm5idvppofq', NULL, NULL, '0.00', NULL, '2018-02-15 16:36:34', 0, 0),
-(18, 'k9r7dhsjo2dr574qqg483msna8', 1, '88460000', '90.18', 2, '2018-02-15 17:46:10', 4672.41, 4582.23);
+(18, 'k9r7dhsjo2dr574qqg483msna8', 1, '88460000', '90.18', 2, '2018-02-15 17:46:10', 4672.41, 4582.23),
+(19, 'smm5e3k26gvenbh6u41k022l4i', NULL, '88103050', '37.59', 1, '2018-02-16 11:14:56', 1186.59, 1149);
 
 -- --------------------------------------------------------
 
@@ -125,7 +137,8 @@ INSERT INTO `tb_cartsproducts` (`idcartproduct`, `idcart`, `idproduct`, `dtremov
 (27, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:28:14'),
 (28, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:51:55'),
 (29, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:51:56'),
-(30, 18, 6, '0000-00-00 00:00:00', '2018-02-15 18:52:06');
+(30, 18, 6, '0000-00-00 00:00:00', '2018-02-15 18:52:06'),
+(31, 19, 9, '0000-00-00 00:00:00', '2018-02-16 11:24:09');
 
 -- --------------------------------------------------------
 
@@ -381,19 +394,19 @@ ALTER TABLE `tb_userspasswordsrecoveries`
 -- AUTO_INCREMENT for table `tb_addresses`
 --
 ALTER TABLE `tb_addresses`
-  MODIFY `idaddress` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idaddress` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tb_carts`
 --
 ALTER TABLE `tb_carts`
-  MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tb_cartsproducts`
 --
 ALTER TABLE `tb_cartsproducts`
-  MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `tb_categories`

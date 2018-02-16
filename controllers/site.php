@@ -55,7 +55,6 @@ $app->get('/products/:url', function($url) {
 $app->get('/cart', function() {
     $cart = RepositoryCart::getFromSession();
     $repositoryCart = new RepositoryCart();
-
     $page = new Page();
     $page->setTpl("cart", [
         'cart' => $cart,
@@ -101,56 +100,64 @@ $app->post('/cart/freight', function() {
 
 $app->get('/checkout', function() {
     RepositoryUser::checkLogin(true);
-    $cart = RepositoryCart::getFromSession();
-    $repositoryCart = new RepositoryCart();
+    $cart = RepositoryCart::getFromSession();    
+    $repositoryCart = new RepositoryCart();    
+    $cep = (isset($_GET['zipcode'])) ? $_GET['zipcode'] : $cart['zipcode'];
+    if(preg_replace("/[^0-9]/", "", $cep) !== $cart['zipcode']){
+        $repositoryCart->updateZipcode($cep, $cart['idcart']);
+        $cart = RepositoryCart::get($cart['idcart']);         
+    }
+    $address = RepositoryAddress::getEnderecoAPI($cep);
     $page = new Page();
     $page->setTpl("checkout", [
         'cart' => $cart,
-        'products' => $repositoryCart->getProducts($cart['idcart'])
+        'products' => $repositoryCart->getProducts($cart['idcart']),
+        'address'=>$address,
+        'error' => RepositoryCart::getMsgError()
     ]);
 });
 
 
 
 $app->post("/checkout", function() {
-    RepositoryUser::checkLogin(true);
-    $cart = RepositoryCart::getFromSession();
+    RepositoryUser::checkLogin(true);        
     if (!isset($_POST['zipcode']) || $_POST['zipcode'] === '') {
-        Address::setMsgError("Informe o CEP.");
+        RepositoryCart::setMsgError("Informe o CEP.");
         header('Location: /ecommerce/checkout');
         exit;
     }
-    if (!isset($_POST['desaddress']) || $_POST['desaddress'] === '') {
-        Address::setMsgError("Informe o endereço.");
+    if (!isset($_POST['logradouro']) || $_POST['logradouro'] === '') {
+        RepositoryCart::setMsgError("Informe o endereço.");
         header('Location: /ecommerce/checkout');
         exit;
     }
-    if (!isset($_POST['desdistrict']) || $_POST['desdistrict'] === '') {
-        Address::setMsgError("Informe o bairro.");
+    if (!isset($_POST['bairro']) || $_POST['bairro'] === '') {
+        RepositoryCart::setMsgError("Informe o bairro.");
         header('Location: /ecommerce/checkout');
         exit;
     }
-    if (!isset($_POST['descity']) || $_POST['descity'] === '') {
-        Address::setMsgError("Informe a cidade.");
+    if (!isset($_POST['cidade']) || $_POST['cidade'] === '') {
+        RepositoryCart::setMsgError("Informe a cidade.");
         header('Location: /ecommerce/checkout');
         exit;
     }
-    if (!isset($_POST['desstate']) || $_POST['desstate'] === '') {
-        Address::setMsgError("Informe o estado.");
+    if (!isset($_POST['estado']) || $_POST['estado'] === '') {
+        RepositoryCart::setMsgError("Informe o estado.");
         header('Location: /ecommerce/checkout');
         exit;
     }
-    if (!isset($_POST['descountry']) || $_POST['descountry'] === '') {
-        Address::setMsgError("Informe o país.");
+    if (!isset($_POST['pais']) || $_POST['pais'] === '') {
+        RepositoryCart::setMsgError("Informe o país.");
         header('Location: /ecommerce/checkout');
         exit;
     }
-    $user = User::getFromSession();
-    $address = new Address();
-    $_POST['deszipcode'] = $_POST['zipcode'];
-    $_POST['idperson'] = $user->getidperson();
-    $address->setData($_POST);
-    $address->save();
+    $endereco = $_POST;    
+    $cart = RepositoryCart::getFromSession();
+    if(preg_replace("/[^0-9]/", "", $endereco['zipcode']) !== $cart['zipcode']){
+        $repositoryCart->updateZipcode($cep, $cart['idcart']);      
+    }
+    RepositoryAddress::save($endereco, $cart['idcart'], $_SESSION[User::SESSION]->getIduser());    
+    /*
     $cart = Cart::getFromSession();
     $cart->getCalculateTotal();
     $order = new Order();
@@ -161,16 +168,8 @@ $app->post("/checkout", function() {
         'idstatus' => OrderStatus::EM_ABERTO,
         'vltotal' => $cart->getvltotal()
     ]);
-    $order->save();
-    switch ((int) $_POST['payment-method']) {
-        case 1:
-            header("Location: /order/" . $order->getidorder() . "/pagseguro");
-            break;
-        case 2:
-            header("Location: /order/" . $order->getidorder() . "/paypal");
-            break;
-    }
-    exit;
+    $order->save();   
+     */
 });
 
 $app->get('/login', function() {

@@ -1,12 +1,13 @@
 <?php
 
 namespace Werlich\Model\Repository;
+use \Werlich\Interfaces\SessionMsgs;
 
-class RepositoryAddress {
+class RepositoryAddress implements SessionMsgs{
 
     const SESSION_ERROR = "AddressError";
 
-    public static function getCEP($nrcep) {
+    public static function getEnderecoAPI($nrcep) {
         $nrcep = str_replace("-", "", $nrcep);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://viacep.com.br/ws/$nrcep/json/");
@@ -16,33 +17,24 @@ class RepositoryAddress {
         curl_close($ch);
         return $data;
     }
+    
 
-    public function loadFromCEP($nrcep) {
-        $data = RepositoryAddress::getCEP($nrcep);
-        if (isset($data['logradouro']) && $data['logradouro'] != '') {
-            return $data;
-        } else {
-            return [];
-        }
-    }
-
-    public function save() {
-        $sql = new Sql();
-        $results = $sql->select("CALL sp_addresses_save(:idaddress, :idperson, :desaddress, :desnumber, :descomplement, :descity, :desstate, :descountry, :deszipcode, :desdistrict)", [
-            ':idaddress' => $this->getidaddress(),
-            ':idperson' => $this->getidperson(),
-            ':desaddress' => utf8_decode($this->getdesaddress()),
-            ':desnumber' => $this->getdesnumber(),
-            ':descomplement' => utf8_decode($this->getdescomplement()),
-            ':descity' => utf8_decode($this->getdescity()),
-            ':desstate' => utf8_decode($this->getdesstate()),
-            ':descountry' => utf8_decode($this->getdescountry()),
-            ':deszipcode' => $this->getdeszipcode(),
-            ':desdistrict' => $this->getdesdistrict()
-        ]);
-        if (count($results) > 0) {
-            $this->setData($results[0]);
-        }
+    public static function save($endereco, $cart, $user) {
+        $query = "INSERT INTO tb_addresses (iduser, idcart, address, complement, number, city, state, country, zipcode, district) "
+                . "VALUES (:iduser, :idcart, :address, :complement, :number, :city, :state, :country, :zipcode, :district)";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->bindValue(':iduser', $user);
+        $stmt->bindValue(':idcart', $cart);
+        $stmt->bindValue(':address', utf8_decode($endereco['logradouro']));
+        $stmt->bindValue(':complement', utf8_decode($endereco['complemento']));
+        $stmt->bindValue(':number', utf8_decode($endereco['numero']));
+        $stmt->bindValue(':district', utf8_decode($endereco['bairro']));
+        $stmt->bindValue(':city', utf8_decode($endereco['cidade']));
+        $stmt->bindValue(':state', utf8_decode($endereco['estado']));
+        $stmt->bindValue(':country', utf8_decode($endereco['pais']));
+        $stmt->bindValue(':zipcode', preg_replace("/[^0-9]/", "", $endereco['zipcode']));
+        $stmt->execute();        
     }
 
     public static function setMsgError($msg) {
