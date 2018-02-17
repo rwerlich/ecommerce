@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 4.7.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 16-Fev-2018 às 13:50
--- Versão do servidor: 10.1.28-MariaDB
--- PHP Version: 7.1.10
+-- Generation Time: 17-Fev-2018 às 02:38
+-- Versão do servidor: 10.1.26-MariaDB
+-- PHP Version: 7.1.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -48,9 +48,18 @@ CREATE TABLE `tb_addresses` (
 --
 
 INSERT INTO `tb_addresses` (`idaddress`, `iduser`, `idcart`, `address`, `complement`, `number`, `district`, `city`, `state`, `country`, `zipcode`, `dtregister`) VALUES
-(1, 1, 19, 'Rua Coletor Irineu Comelli', 'atÃ© 1750/1751', '', 'Centro', 'SÃ£o JosÃ©', 'SC', 'Brasil', '88103050', '2018-02-16 12:40:40'),
-(2, 1, 19, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-16 12:41:35'),
-(3, 1, 19, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-16 12:44:53');
+(7, 1, 20, 'SC 407', '', '', 'Rio das Antas', 'Angelina', 'SC', 'Brasil', '88460000', '2018-02-17 01:01:33'),
+(8, 1, 20, 'SC 407', '', '', 'Rio das Antas', 'Angelina', 'SC', 'Brasil', '88460000', '2018-02-17 01:02:13'),
+(9, 1, 20, 'SC 407', '', '', 'Rio das Antas', 'Angelina', 'SC', 'Brasil', '88460000', '2018-02-17 01:04:01'),
+(10, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:06:09'),
+(11, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:07:29'),
+(12, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:08:59'),
+(13, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:10:25'),
+(14, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:12:42'),
+(15, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:14:33'),
+(16, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:15:25'),
+(17, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:15:45'),
+(18, 1, 20, 'Rua Coletor Irineu Comelli', 'até 1750/1751', '', 'Centro', 'São José', 'SC', 'Brasil', '88103050', '2018-02-17 01:28:32');
 
 -- --------------------------------------------------------
 
@@ -87,7 +96,8 @@ INSERT INTO `tb_carts` (`idcart`, `sessionid`, `iduser`, `zipcode`, `vlfreight`,
 (16, 'vvd0bjh30o26isi6f7qv9pp4lv', 1, NULL, '0.00', NULL, '2018-02-08 19:25:57', 0, 0),
 (17, 'u1eq3m5miou19jinm5idvppofq', NULL, NULL, '0.00', NULL, '2018-02-15 16:36:34', 0, 0),
 (18, 'k9r7dhsjo2dr574qqg483msna8', 1, '88460000', '90.18', 2, '2018-02-15 17:46:10', 4672.41, 4582.23),
-(19, 'smm5e3k26gvenbh6u41k022l4i', NULL, '88103050', '37.59', 1, '2018-02-16 11:14:56', 1186.59, 1149);
+(19, 'smm5e3k26gvenbh6u41k022l4i', NULL, '88103050', '37.59', 1, '2018-02-16 11:14:56', 1186.59, 1149),
+(20, '6nori1jcp7j8s815nnhnir8udl', 1, '88103050', '30.55', 1, '2018-02-17 00:17:09', 710.45, 679.9);
 
 -- --------------------------------------------------------
 
@@ -138,7 +148,8 @@ INSERT INTO `tb_cartsproducts` (`idcartproduct`, `idcart`, `idproduct`, `dtremov
 (28, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:51:55'),
 (29, 18, 9, '0000-00-00 00:00:00', '2018-02-15 18:51:56'),
 (30, 18, 6, '0000-00-00 00:00:00', '2018-02-15 18:52:06'),
-(31, 19, 9, '0000-00-00 00:00:00', '2018-02-16 11:24:09');
+(31, 19, 9, '0000-00-00 00:00:00', '2018-02-16 11:24:09'),
+(32, 20, 10, '0000-00-00 00:00:00', '2018-02-17 00:34:19');
 
 -- --------------------------------------------------------
 
@@ -171,10 +182,26 @@ CREATE TABLE `tb_orders` (
   `idorder` int(11) NOT NULL,
   `idcart` int(11) NOT NULL,
   `iduser` int(11) NOT NULL,
-  `idstatus` int(11) NOT NULL,
+  `idstatus` int(11) NOT NULL DEFAULT '1',
   `vltotal` decimal(10,2) NOT NULL,
-  `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `dtregister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `idaddress` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `tb_orders`
+--
+
+INSERT INTO `tb_orders` (`idorder`, `idcart`, `iduser`, `idstatus`, `vltotal`, `dtregister`, `idaddress`) VALUES
+(6, 20, 1, 1, '710.45', '2018-02-17 01:06:09', 0),
+(7, 20, 1, 1, '710.45', '2018-02-17 01:07:30', 0),
+(8, 20, 1, 1, '710.45', '2018-02-17 01:09:00', 0),
+(9, 20, 1, 1, '710.45', '2018-02-17 01:10:25', 7),
+(10, 20, 1, 1, '710.45', '2018-02-17 01:12:42', 0),
+(11, 20, 1, 1, '710.45', '2018-02-17 01:14:33', 0),
+(12, 20, 1, 1, '710.45', '2018-02-17 01:15:25', 0),
+(13, 20, 1, 1, '710.45', '2018-02-17 01:15:45', 17),
+(14, 20, 1, 1, '710.45', '2018-02-17 01:28:32', 18);
 
 -- --------------------------------------------------------
 
@@ -394,62 +421,52 @@ ALTER TABLE `tb_userspasswordsrecoveries`
 -- AUTO_INCREMENT for table `tb_addresses`
 --
 ALTER TABLE `tb_addresses`
-  MODIFY `idaddress` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
+  MODIFY `idaddress` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `tb_carts`
 --
 ALTER TABLE `tb_carts`
-  MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
+  MODIFY `idcart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `tb_cartsproducts`
 --
 ALTER TABLE `tb_cartsproducts`
-  MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
-
+  MODIFY `idcartproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT for table `tb_categories`
 --
 ALTER TABLE `tb_categories`
   MODIFY `idcategory` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
 --
 -- AUTO_INCREMENT for table `tb_orders`
 --
 ALTER TABLE `tb_orders`
-  MODIFY `idorder` int(11) NOT NULL AUTO_INCREMENT;
-
+  MODIFY `idorder` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `tb_ordersstatus`
 --
 ALTER TABLE `tb_ordersstatus`
   MODIFY `idstatus` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
 --
 -- AUTO_INCREMENT for table `tb_products`
 --
 ALTER TABLE `tb_products`
   MODIFY `idproduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
 --
 -- AUTO_INCREMENT for table `tb_users`
 --
 ALTER TABLE `tb_users`
   MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT for table `tb_userslogs`
 --
 ALTER TABLE `tb_userslogs`
   MODIFY `idlog` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `tb_userspasswordsrecoveries`
 --
 ALTER TABLE `tb_userspasswordsrecoveries`
   MODIFY `idrecovery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
-
 --
 -- Constraints for dumped tables
 --
