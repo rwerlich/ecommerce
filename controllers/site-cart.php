@@ -111,8 +111,8 @@ $app->post("/checkout", function() {
     if (preg_replace("/[^0-9]/", "", $endereco['zipcode']) !== $cart['zipcode']) {
         $repositoryCart->updateZipcode($cep, $cart['idcart']);
     }
-    RepositoryAddress::save($endereco, $cart['idcart'], $_SESSION[User::SESSION]->getIduser());
-    $order = RepositoryOrder::initializeOrder($cart['idcart'], $_SESSION[User::SESSION]->getIduser(), $cart['vltotal']);
+    $idaddress = RepositoryAddress::save($endereco, $cart['idcart'], $_SESSION[User::SESSION]->getIduser());
+    $order = RepositoryOrder::initializeOrder($cart['idcart'], $_SESSION[User::SESSION]->getIduser(), $cart['vltotal'], $idaddress);
     header("Location: /ecommerce/order/{$order}");
     exit;
 });

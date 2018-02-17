@@ -1,21 +1,21 @@
 <?php
 
-
 namespace Werlich\Model\Repository;
 
 class RepositoryOrder {
-    
-    public static function initializeOrder($cart, $iduser, $total) {
-        $query = "INSERT INTO tb_orders (idcart, iduser, vltotal) "
-                . "VALUES (:idcart, :iduser, :vltotal); LAST_INSERT_ID()";
+
+    public static function initializeOrder($cart, $iduser, $total, $idaddress) {
+        $query = "INSERT INTO tb_orders (idcart, iduser, vltotal, idaddress) "
+                . "VALUES (:idcart, :iduser, :vltotal, :idaddress);";
         $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
         $stmt = $bd->prepare($query);
         $stmt->bindValue(':idcart', $cart);
         $stmt->bindValue(':iduser', $iduser);
         $stmt->bindValue(':vltotal', $total);
-        return $stmt->execute();
+        $stmt->bindValue(':idaddress', $idaddress);
+        $stmt->execute();
+        return $bd->lastInsertId();
     }
-    
 
     public static function get(int $idorder) {
         $query = "SELECT * 
@@ -28,10 +28,8 @@ class RepositoryOrder {
         $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
         $stmt = $bd->prepare($query);
         $stmt->bindValue(':idorder', $idorder);
-        $result = $stmt->execute();
-        if ($result > 0) {
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
-        }
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    
+
 }

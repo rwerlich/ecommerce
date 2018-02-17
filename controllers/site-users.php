@@ -3,6 +3,8 @@
 use \Werlich\Page;
 use \Werlich\Model\Entities\User;
 use \Werlich\Model\Repository\RepositoryUser;
+use \Werlich\Model\Repository\RepositoryCart;
+use \Werlich\Model\Repository\RepositoryOrder;
 
 $app->post('/register', function() {
     $_SESSION['registerValues'] = $_POST;
@@ -152,3 +154,23 @@ $app->post("/profile/change-password", function() {
     exit;
 });
 
+$app->get("/profile/orders", function() {
+    RepositoryUser::checkLogin(true);
+    $user = RepositoryUser::getFromSession();
+    $page = new Page();
+    $page->setTpl("profile-orders", [
+        'orders' => RepositoryUser::getOrders($user->getIduser())
+    ]);
+});
+$app->get("/profile/orders/:idorder", function($idorder) {
+    RepositoryUser::checkLogin(true);
+    $repositorioCart = new RepositoryCart();
+    $order = RepositoryOrder::get((int) $idorder);
+    $cart = RepositoryCart::get($order['idcart']);
+    $page = new Page();
+    $page->setTpl("profile-orders-detail", [
+        'order' => $order,
+        'cart' => $cart,
+        'products' => $repositorioCart->getProducts($order['idcart'])
+    ]);
+});

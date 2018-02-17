@@ -34,7 +34,8 @@ class RepositoryAddress implements SessionMsgs{
         $stmt->bindValue(':state', utf8_decode($endereco['estado']));
         $stmt->bindValue(':country', utf8_decode($endereco['pais']));
         $stmt->bindValue(':zipcode', preg_replace("/[^0-9]/", "", $endereco['zipcode']));
-        $stmt->execute();        
+        $stmt->execute();    
+        return $bd->lastInsertId();
     }
 
     public static function setMsgError($msg) {

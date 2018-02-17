@@ -21,24 +21,38 @@ class RepositoryUser implements SessionMsgs {
     }
 
     public static function conecta() {
-        return new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
-        ;
+        return new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);        
     }
-    
-    public static function validToken(String $token):int {
+
+    public static function getOrders(int $iduser) {
+        $query = "SELECT * 
+                FROM tb_orders AS a
+                INNER JOIN tb_ordersstatus AS b ON b.idstatus = a.idstatus
+                INNER JOIN tb_carts AS c ON c.idcart = a.idcart
+                INNER JOIN tb_users AS d ON d.iduser = a.iduser
+                INNER JOIN tb_addresses AS e ON e.idaddress = a.idaddress
+                WHERE a.iduser = :iduser;";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->bindValue(':iduser', $iduser);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function validToken(String $token): int {
         $query = "SELECT * FROM tb_userspasswordsrecoveries WHERE token = :token AND dtrecovery IS NULL AND DATE_ADD(dtregister, INTERVAL 1 HOUR) >= NOW()";
         $bd = RepositoryUser::conecta();
         $stmt = $bd->prepare($query);
         $stmt->bindValue(':token', $token);
         $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);    
-        if($result['iduser'] > 0){
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result['iduser'] > 0) {
             return $result['iduser'];
-        }else{
+        } else {
             return 0;
         }
     }
-    
+
     public static function updatePass(String $pass, String $token, int $id) {
         $query = "UPDATE tb_users SET password = :password WHERE iduser = :iduser; "
                 . "UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE token = :token AND iduser = :iduser";
@@ -47,17 +61,16 @@ class RepositoryUser implements SessionMsgs {
         $stmt->bindValue(':password', md5($pass));
         $stmt->bindValue(':iduser', $id);
         $stmt->bindValue(':token', $token);
-        $stmt->execute();    
-        
+        $stmt->execute();
     }
-    
+
     public static function getForEmail(String $email) {
         $query = "SELECT * FROM tb_users WHERE email = :email";
         $bd = RepositoryUser::conecta();
         $stmt = $bd->prepare($query);
         $stmt->bindValue(':email', $email);
         $stmt->execute();
-        return $stmt->fetchObject('\Werlich\Model\Entities\User');        
+        return $stmt->fetchObject('\Werlich\Model\Entities\User');
     }
 
     public static function createForgot(String $email, bool $admin = true) {
@@ -75,11 +88,11 @@ class RepositoryUser implements SessionMsgs {
             $stmt->bindValue(':desip', $_SERVER['REMOTE_ADDR']);
             $stmt->bindValue(':token', $token);
             $stmt->execute();
-            if($admin === true){
+            if ($admin === true) {
                 $link = "http://localhost/ecommerce/admin/forgot/reset?code={$token}";
-            }else{
+            } else {
                 $link = "http://localhost/ecommerce/forgot/reset?code={$token}";
-            }            
+            }
             $mailer = new Mailer($user->getEmail(), $user->getNome(), "Refeinir senha Ecommerce", "forgot", [
                 'name' => $user->getNome(), 'link' => $link
             ]);
@@ -216,7 +229,7 @@ class RepositoryUser implements SessionMsgs {
     public static function clearMsgError() {
         $_SESSION[RepositoryUser::SESSION_ERROR] = NULL;
     }
-    
+
     public static function setMsgSuccess($msg) {
         $_SESSION[RepositoryUser::SESSION_SUCCESS] = $msg;
     }
@@ -230,7 +243,5 @@ class RepositoryUser implements SessionMsgs {
     public static function clearMsgSuccess() {
         $_SESSION[RepositoryUser::SESSION_SUCCESS] = NULL;
     }
-
-   
 
 }
