@@ -7,9 +7,10 @@ use \Werlich\Model\Entities\User;
 use \Werlich\Model\Repository\RepositoryUser;
 use \Werlich\Interfaces\SessionMsgs;
 
-class RepositoryCart implements SessionMsgs{
+class RepositoryCart implements SessionMsgs {
 
     private $bd;
+
     const SESSION_ERROR = 'cartError';
 
     public function __construct() {
@@ -126,8 +127,8 @@ class RepositoryCart implements SessionMsgs{
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    
-    public function updateZipcode(String $cep, int $cart) { 
+
+    public function updateZipcode(String $cep, int $cart) {
         $vlfrete = $this->find($cart);
         $totals = $this->getProductsTotal($cart);
         $query = "UPDATE tb_carts SET zipcode = :zipcode WHERE idcart = :idcart ";
@@ -137,45 +138,48 @@ class RepositoryCart implements SessionMsgs{
         $stmt->execute();
         $this->calcFrete($cart, $cep);
     }
-    
+
     public function calcFrete(int $cart, String $zipcode) {
         $cep = preg_replace("/[^0-9]/", "", $zipcode);
         $totals = $this->getProductsTotal($cart);
-        if($totals['nrqtd'] > 0){
-            if($totals['vlheight'] < 2) $totals['vlheight'] = 2;
-            if($totals['vllength'] < 16) $totals['vllength'] = 16;
+        if ($totals['nrqtd'] > 0) {
+            if ($totals['vlheight'] < 2)
+                $totals['vlheight'] = 2;
+            if ($totals['vllength'] < 16)
+                $totals['vllength'] = 16;
             $qs = http_build_query([
-               'nCdEmpresa' => '', 
-               'sDsSenha' => '', 
-               'nCdServico' => '40010', 
-               'sCepOrigem' => '88103050', 
-               'sCepDestino' => $cep, 
-               'nVlPeso' => $totals['vlweight'], 
-               'nCdFormato' => '1', 
-               'nVlComprimento' => $totals['vllength'], 
-               'nVlAltura' => $totals['vlheight'], 
-               'nVlLargura' => $totals['vlwidth'], 
-               'nVlDiametro' => '1', 
-               'sCdMaoPropria' => 'N', 
-               'nVlValorDeclarado' => $totals['vlprice'], 
-               'sCdAvisoRecebimento' => 'S'
+                'nCdEmpresa' => '',
+                'sDsSenha' => '',
+                'nCdServico' => '40010',
+                'sCepOrigem' => '88103050',
+                'sCepDestino' => $cep,
+                'nVlPeso' => $totals['vlweight'],
+                'nCdFormato' => '1',
+                'nVlComprimento' => $totals['vllength'],
+                'nVlAltura' => $totals['vlheight'],
+                'nVlLargura' => $totals['vlwidth'],
+                'nVlDiametro' => '1',
+                'sCdMaoPropria' => 'N',
+                'nVlValorDeclarado' => $totals['vlprice'],
+                'sCdAvisoRecebimento' => 'S'
             ]);
-            $xml = simplexml_load_file('http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?'.$qs);
-            $result = $xml->Servicos->cServico;            
-            if($result->MsgErro != ''){
+            $xml = simplexml_load_file('http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?' . $qs);
+            $result = $xml->Servicos->cServico;
+            if ($result->MsgErro != '') {
                 RepositoryCart::setMsgError($result->MsgErro);
-            }else{
-                 RepositoryCart::clearMsgError();
-            }            
+            } else {
+                RepositoryCart::clearMsgError();
+            }
             $nrdays = $result->PrazoEntrega;
-            $vlfrete = RepositoryCart::formatValueToDecimal($result->Valor); 
-            $this->saveFrete($cart, $vlfrete, $nrdays,$cep);
-        }else{
-            
-        }        
+            $vlfrete = RepositoryCart::formatValueToDecimal($result->Valor);
+
+            $this->saveFrete($cart, $vlfrete, $nrdays, $cep);
+        } else {
+            $this->saveFrete($cart, 0, 0,$cep);
+        }
     }
-    
-    public function saveFrete(int $cart, $vlfrete, $nrdays, $cep) {        
+
+    public function saveFrete(int $cart, $vlfrete, $nrdays, $cep) {
         $query = "UPDATE tb_carts SET zipcode = :zipcode, vlfreight = :vlfreight, nrdays = :nrdays "
                 . "WHERE idcart = :idcart ";
         $stmt = $this->bd->prepare($query);
@@ -186,8 +190,8 @@ class RepositoryCart implements SessionMsgs{
         $stmt->execute();
         $this->updateTotal($cart);
     }
-    
-    public function updateTotal(int $cart) { 
+
+    public function updateTotal(int $cart) {
         $vlfrete = $this->find($cart);
         $totals = $this->getProductsTotal($cart);
         $query = "UPDATE tb_carts SET vltotal = :vltotal, vlsubtotal = :vlsubtotal "
@@ -198,15 +202,15 @@ class RepositoryCart implements SessionMsgs{
         $stmt->bindValue(':idcart', $cart);
         $stmt->execute();
     }
-    
+
     public function updateFrete(int $cart) {
         $c = $this->find($cart);
-        if($c['zipcode'] != ''){
+        if ($c['zipcode'] != '') {
             $this->calcFrete($cart, $c['zipcode']);
-        }             
+        }
         $this->updateTotal($cart);
     }
-    
+
     public function find(int $idcart) {
         $query = "SELECT * FROM tb_carts WHERE idcart = :idcart";
         $stmt = $this->bd->prepare($query);
@@ -214,24 +218,24 @@ class RepositoryCart implements SessionMsgs{
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    
-    public static function formatValueToDecimal($value):float{
+
+    public static function formatValueToDecimal($value): float {
         $value = str_replace('.', '', $value);
         return str_replace(',', '.', $value);
     }
-    
-    public static function setMsgError($msg){
+
+    public static function setMsgError($msg) {
         $_SESSION[RepositoryCart::SESSION_ERROR] = $msg;
     }
 
-    public static function getMsgError(){
+    public static function getMsgError() {
         $msg = (isset($_SESSION[RepositoryCart::SESSION_ERROR])) ? $_SESSION[RepositoryCart::SESSION_ERROR] : '';
         RepositoryCart::clearMsgError();
         return $msg;
     }
 
-    public static function clearMsgError(){
+    public static function clearMsgError() {
         $_SESSION[RepositoryCart::SESSION_ERROR] = NULL;
-    }      
+    }
 
 }
