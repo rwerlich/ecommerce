@@ -113,6 +113,7 @@ $app->post("/checkout", function() {
     }
     $idaddress = RepositoryAddress::save($endereco, $cart['idcart'], $_SESSION[User::SESSION]->getIduser());
     $order = RepositoryOrder::initializeOrder($cart['idcart'], $_SESSION[User::SESSION]->getIduser(), $cart['vltotal'], $idaddress);
+    session_regenerate_id();
     header("Location: /ecommerce/order/{$order}");
     exit;
 });

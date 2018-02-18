@@ -1,8 +1,4 @@
 <?php if(!class_exists('Rain\Tpl')){exit;}?><!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html>
 <head>
   <meta charset="utf-8">
@@ -60,9 +56,9 @@ desired effect
     <!-- Logo -->
     <a href="/ecommerce/admin" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
+      <span class="logo-mini"><b>W</b>E</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+      <span class="logo-lg"><b>Werlich</b>Ecommerce</span>
     </a>
 
     <!-- Header Navbar -->
@@ -253,12 +249,12 @@ desired effect
       <!-- /.search form -->
 
       <!-- Sidebar Menu -->
-      <ul class="sidebar-menu">
-        <li class="header">HEADER</li>
+      <ul class="sidebar-menu">        
         <!-- Optionally, you can add icons to the links -->
         <li><a href="/ecommerce/admin/users"><i class="fa fa-users"></i> <span>Usuários</span></a></li>
         <li><a href="/ecommerce/admin/categories"><i class="fa fa-link"></i> <span>Categorias</span></a></li>
         <li><a href="/ecommerce/admin/products"><i class="fa fa-shirtsinbulk"></i> <span>Produtos</span></a></li>
+        <li><a href="/ecommerce/admin/orders"><i class="fa fa-shopping-cart"></i> <span>Pedidos</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">

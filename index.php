@@ -20,5 +20,6 @@ require_once("controllers/admin-login.php");
 require_once("controllers/admin-users.php");
 require_once("controllers/admin-categories.php");
 require_once("controllers/admin-products.php");
+require_once("controllers/admin-orders.php");
 
 $app->run();
