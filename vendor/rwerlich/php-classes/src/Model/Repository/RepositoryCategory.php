@@ -121,5 +121,47 @@ class RepositoryCategory {
             'pages' => ceil($total[0]['total'] / $itens)
         ];
     }
+    
+    public function getPage(int $page = 1, int $itens = 10) {        
+        $start = ($page -1) * $itens;
+        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM tb_categories ORDER BY category ASC LIMIT {$start}, {$itens}";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $query = "SELECT FOUND_ROWS() as total";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $total = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return [
+            'data' => $results,
+            'total' => $total[0]['total'],
+            'pages' => ceil($total[0]['total'] / $itens)
+        ];
+    }
+    
+    public function getPageSearch(string $search, int $page = 1, int $itens = 10) {        
+        $start = ($page -1) * $itens;
+        
+        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM tb_categories "
+                . "WHERE category LIKE :search "
+                . "ORDER BY category ASC LIMIT {$start}, {$itens}";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':search', "%{$search}%");
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $query = "SELECT FOUND_ROWS() as total";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $total = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return [
+            'data' => $results,
+            'total' => $total[0]['total'],
+            'pages' => ceil($total[0]['total'] / $itens)
+        ];
+    }
 
 }
