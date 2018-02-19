@@ -7,10 +7,28 @@ use \Werlich\Model\Repository\RepositoryUser;
 $app->get('/admin/users', function() {
     RepositoryUser::isAdmin();
     $repositoryUser = new RepositoryUser();
-    $users = $repositoryUser->listAll();
+    $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+    $page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
+    if ($search != '') {
+        $pagination = $repositoryUser->getPageSearch($search, $page);
+    } else {
+        $pagination = $repositoryUser->getPage($page);
+    }
+    $pages = [];
+    for ($x = 0; $x < $pagination['pages']; $x++) {
+        array_push($pages, [
+            'href' => '/ecommerce/admin/users?' . http_build_query([
+                'page' => $x + 1,
+                'search' => $search
+            ]),
+            'text' => $x + 1
+        ]);
+    }
     $page = new PageAdmin();
     $page->setTpl("users", array(
-        "users" => $users
+        "users" => $pagination['data'],
+        "search" => $search,
+        "pages" => $pages
     ));
 });
 
@@ -22,7 +40,7 @@ $app->get('/admin/users/create', function() {
 
 $app->post('/admin/users/create', function() {
     RepositoryUser::isAdmin();
-    $repositoryUser = new RepositoryUser();    
+    $repositoryUser = new RepositoryUser();
     $admin = (isset($_POST["admin"])) ? 1 : 0;
     $user = new User();
     $user->setAtributes('', $_POST['login'], md5($_POST['password']), $admin, $_POST['nome'], $_POST['email'], $_POST['phone']);

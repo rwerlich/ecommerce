@@ -215,6 +215,49 @@ class RepositoryUser implements SessionMsgs {
         $stmt->bindValue(':iduser', $iduser);
         $stmt->execute();
     }
+    
+    public function getPage(int $page = 1, int $itens = 10) {        
+        $start = ($page -1) * $itens;
+        
+        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM tb_users ORDER BY nome ASC LIMIT {$start}, {$itens}";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $query = "SELECT FOUND_ROWS() as total";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $total = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return [
+            'data' => $results,
+            'total' => $total[0]['total'],
+            'pages' => ceil($total[0]['total'] / $itens)
+        ];
+    }
+    
+    public function getPageSearch(string $search, int $page = 1, int $itens = 10) {        
+        $start = ($page -1) * $itens;
+        
+        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM tb_users "
+                . "WHERE nome LIKE :search OR login LIKE :search OR email = :search "
+                . "ORDER BY nome ASC LIMIT {$start}, {$itens}";
+        $stmt = $this->bd->prepare($query);
+        $stmt->bindValue(':search', $search);
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $query = "SELECT FOUND_ROWS() as total";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        $total = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return [
+            'data' => $results,
+            'total' => $total[0]['total'],
+            'pages' => ceil($total[0]['total'] / $itens)
+        ];
+    }
 
     public static function setMsgError($msg) {
         $_SESSION[RepositoryUser::SESSION_ERROR] = $msg;
