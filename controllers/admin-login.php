@@ -7,11 +7,15 @@ use \Werlich\PageAdmin;
 
 $app->get('/admin/login', function() {
     $page = new PageAdmin(["header" => false, "footer" => false]);
-    $page->setTpl("login");
+    $page->setTpl("login", ['error' => RepositoryUser::getMsgError()]);
 });
 
 $app->post('/admin/login', function() {
-    RepositoryUser::login($_POST["deslogin"], $_POST["despassword"]);
+    try {
+        RepositoryUser::login($_POST["deslogin"], $_POST["despassword"]);
+    } catch (Exception $ex) {
+        RepositoryUser::setMsgError($ex->getMessage());
+    }    
     header("Location: /ecommerce/admin");
     exit;
 });

@@ -13,6 +13,29 @@ $app->get('/admin/orders/:idorder/delete', function($idorder) {
     exit;
 });
 
+$app->get('/admin/orders/:idorder/status', function($idorder) {
+    RepositoryUser::isAdmin();    
+    $page = new PageAdmin();
+    $page->setTpl("order-status", array(
+        "order" => RepositoryOrder::get($idorder),
+        'status' => RepositoryOrder::listStatus(),
+        'msgError' => RepositoryOrder::getMsgError(),
+        'msgSuccess' => RepositoryOrder::getMsgSuccess()
+    ));    
+});
+
+$app->post('/admin/orders/:idorder/status', function($idorder) {
+    RepositoryUser::isAdmin();    
+    if(!isset($_POST['idstatus']) || !(int)$_POST['idstatus'] > 0){
+        RepositoryOrder::setMsgError("Informe o status atual.");
+    }else{
+        RepositoryOrder::setMsgSuccess('Status atualizado com sucesso');
+        RepositoryOrder::updateStatus($idorder, $_POST['idstatus']);
+    }
+    header("Location: /ecommerce/admin/orders/{$idorder}/status");
+    exit;
+});
+
 $app->get('/admin/orders/:idorder', function($idorder) {
     RepositoryUser::isAdmin();
     $order = RepositoryOrder::get($idorder);

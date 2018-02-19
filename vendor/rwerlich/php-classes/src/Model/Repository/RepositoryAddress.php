@@ -52,4 +52,16 @@ class RepositoryAddress implements SessionMsgs{
         $_SESSION[RepositoryAddress::SESSION_ERROR] = NULL;
     }
 
+    public static function clearMsgSuccess() {
+        
+    }
+
+    public static function getMsgSuccess() {
+        
+    }
+
+    public static function setMsgSuccess($msg) {
+        
+    }
+
 }

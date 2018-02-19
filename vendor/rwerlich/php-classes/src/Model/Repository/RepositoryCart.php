@@ -238,4 +238,16 @@ class RepositoryCart implements SessionMsgs {
         $_SESSION[RepositoryCart::SESSION_ERROR] = NULL;
     }
 
+    public static function clearMsgSuccess() {
+        
+    }
+
+    public static function getMsgSuccess() {
+        
+    }
+
+    public static function setMsgSuccess($msg) {
+        
+    }
+
 }

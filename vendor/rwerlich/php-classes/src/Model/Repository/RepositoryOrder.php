@@ -1,10 +1,14 @@
 <?php
 
 namespace Werlich\Model\Repository;
+use \Werlich\Interfaces\SessionMsgs;
 
-class RepositoryOrder {
+class RepositoryOrder implements SessionMsgs{
 
     private $bd;
+    
+    const SESSION_ERROR = 'orderError';
+    const SESSION_SUCCESS = 'orderSuccess';
 
     public function __construct() {
         $this->bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
@@ -46,6 +50,15 @@ class RepositoryOrder {
         $stmt->execute();
     }
 
+    public static function updateStatus(int $idorder, int $status) {
+        $query = "UPDATE tb_orders SET idstatus = :idstatus WHERE idorder = :idorder;";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->bindValue(':idorder', $idorder);
+        $stmt->bindValue(':idstatus', $status);
+        $stmt->execute();
+    }
+    
     public function listAll() {
         $query = "SELECT a.idorder, b.status, c.vltotal, c.vlfreight, d.nome 
                 FROM tb_orders AS a
@@ -56,6 +69,42 @@ class RepositoryOrder {
         $stmt = $this->bd->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    public static function listStatus() {
+        $query = "SELECT idstatus, status FROM tb_ordersstatus ORDER BY status";
+        $bd = new \PDO('mysql:host=' . HOST . ';dbname=' . DBNAME, DBUSER, PASS);
+        $stmt = $bd->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function setMsgError($msg) {
+        $_SESSION[RepositoryOrder::SESSION_ERROR] = $msg;
+    }
+
+    public static function getMsgError() {
+        $msg = (isset($_SESSION[RepositoryOrder::SESSION_ERROR])) ? $_SESSION[RepositoryOrder::SESSION_ERROR] : '';
+        RepositoryOrder::clearMsgError();
+        return $msg;
+    }
+
+    public static function clearMsgError() {
+        $_SESSION[RepositoryOrder::SESSION_ERROR] = NULL;
+    }
+
+    public static function setMsgSuccess($msg) {
+        $_SESSION[RepositoryOrder::SESSION_SUCCESS] = $msg;
+    }
+
+    public static function getMsgSuccess() {
+        $msg = (isset($_SESSION[RepositoryOrder::SESSION_SUCCESS])) ? $_SESSION[RepositoryOrder::SESSION_SUCCESS] : '';
+        RepositoryOrder::clearMsgSuccess();
+        return $msg;
+    }
+
+    public static function clearMsgSuccess() {
+        $_SESSION[RepositoryOrder::SESSION_SUCCESS] = NULL;
     }
 
 }
