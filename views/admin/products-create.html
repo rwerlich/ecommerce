@@ -27,36 +27,38 @@
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="product">Nome da produto</label>
-                                <input type="text" class="form-control" id="product" name="product" placeholder="Digite o nome do produto">
+                                <input type="text" required class="form-control" id="product" name="product" placeholder="Digite o nome do produto">
                             </div>
                             <div class="form-group">
                                 <label for="vlprice">Preço</label>
-                                <input type="number" class="form-control" id="vlprice" name="vlprice" step="0.01" placeholder="0.00">
+                                <input type="number" required class="form-control" id="vlprice" name="vlprice" step="0.01" placeholder="0.00">
                             </div>
                             <div class="form-group">
                                 <label for="vlwidth">Largura</label>
-                                <input type="number" class="form-control" id="vlwidth" name="vlwidth" step="0.01" placeholder="0.00">
+                                <input type="number" required class="form-control" id="vlwidth" name="vlwidth" step="0.01" placeholder="0.00">
                             </div>
                             <div class="form-group">
                                 <label for="vlheight">Altura</label>
-                                <input type="number" class="form-control" id="vlheight" name="vlheight" step="0.01" placeholder="0.00">
+                                <input type="number" required class="form-control" id="vlheight" name="vlheight" step="0.01" placeholder="0.00">
                             </div>
                             <div class="form-group">
                                 <label for="vllength">Comprimento</label>
-                                <input type="number" class="form-control" id="vllength" name="vllength" step="0.01" placeholder="0.00">
+                                <input type="number" required class="form-control" id="vllength" name="vllength" step="0.01" placeholder="0.00">
                             </div>
                             <div class="form-group">
                                 <label for="vlweight">Peso</label>
-                                <input type="number" class="form-control" id="vlweight" name="vlweight" step="0.01" placeholder="0.00">
+                                <input type="number" required class="form-control" id="vlweight" name="vlweight" step="0.01" placeholder="0.00">
                             </div>
-                            <div class="form-group">
-                                <label for="url">Url</label>
-                                <input type="text" class="form-control" id="url" name="url">
-                            </div>
+
                             <div class="form-group">
                                 <label for="imgproduct">Foto</label>
-                                <input type="file" class="form-control" id="imgproduct" name="imgproduct">
+                                <input type="file" class="form-control" id="imgproduct" name="imgproduct" required>
 
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="destaque" value="1"> Destaque
+                                </label>
                             </div>
                         </div>
                         <!-- /.box-body -->

@@ -168,12 +168,13 @@ class RepositoryUser implements SessionMsgs {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function find(int $iduser) {
+    public static function find(int $iduser) {
         $query = "SELECT * FROM tb_users WHERE iduser = :iduser";
-        $stmt = $this->bd->prepare($query);
+        $bd = RepositoryUser::conecta();
+        $stmt = $bd->prepare($query);
         $stmt->bindValue(':iduser', $iduser);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetchObject('\Werlich\Model\Entities\User');
     }
 
     public function update(User $user) {

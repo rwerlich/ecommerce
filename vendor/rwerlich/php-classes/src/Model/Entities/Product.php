@@ -15,8 +15,17 @@ class Product {
     private $url;
     private $dtregister;
     private $imgproduct;
+    private $destaque;
     
-    function setAtributes($idproduct, $product, $vlprice, $vlwidth, $vlheight, $vllength, $vlweight, $url, $imgproduct, $dtregister) {
+    function getDestaque() {
+        return $this->destaque;
+    }
+
+    function setDestaque($destaque) {
+        $this->destaque = $destaque;
+    }
+        
+    function setAtributes($idproduct, $product, $vlprice, $vlwidth, $vlheight, $vllength, $vlweight, $url, $imgproduct, $dtregister, $destaque) {
         $this->idproduct = $idproduct;
         $this->product = $product;
         $this->vlprice = $vlprice;
@@ -27,6 +36,7 @@ class Product {
         $this->url = $url;
         $this->imgproduct = $imgproduct;
         $this->dtregister = $dtregister;
+        $this->destaque = $destaque;
     }
     
     function getIdproduct() {

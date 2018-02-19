@@ -18,10 +18,17 @@ class RepositoryProduct {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
+    public function listDestaques() {
+        $query = "SELECT * FROM tb_products WHERE destaque = 1 ORDER BY idproduct DESC LIMIT 5";
+        $stmt = $this->bd->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
     public function insert(Product $product) {
-        $query = "INSERT INTO tb_products (product, vlprice, vlwidth, vlheight, vllength, vlweight, url, imgproduct) "
-                . "VALUES (:product, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :url, :imgproduct)";
+        $query = "INSERT INTO tb_products (product, vlprice, vlwidth, vlheight, vllength, vlweight, url, imgproduct, destaque) "
+                . "VALUES (:product, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :url, :imgproduct, :destaque)";
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':product', $product->getProduct());
         $stmt->bindValue(':vlprice', $product->getVlprice());
@@ -30,6 +37,7 @@ class RepositoryProduct {
         $stmt->bindValue(':vllength', $product->getVllength());
         $stmt->bindValue(':vlweight', $product->getVlweight());
         $stmt->bindValue(':url', $product->getUrl());
+        $stmt->bindValue(':destaque', $product->getDestaque());
         $stmt->bindValue(':imgproduct', $product->getImgproduct());
         $stmt->execute();
     }
@@ -58,7 +66,8 @@ class RepositoryProduct {
                     vllength = :vllength,
                     vlweight =:vlweight,
                     url =:url,
-                    imgproduct =:imgproduct
+                    imgproduct =:imgproduct,
+                    destaque = :destaque
                   WHERE idproduct = :idproduct";
         $stmt = $this->bd->prepare($query);
         $stmt->bindValue(':product', $product->getProduct());
@@ -70,6 +79,7 @@ class RepositoryProduct {
         $stmt->bindValue(':url', $product->getUrl());
         $stmt->bindValue(':imgproduct', $product->getImgproduct());
         $stmt->bindValue(':idproduct', $product->getIdproduct());
+        $stmt->bindValue(':destaque', $product->getDestaque());
         $stmt->execute();
     }
 

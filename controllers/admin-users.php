@@ -49,6 +49,42 @@ $app->post('/admin/users/create', function() {
     exit;
 });
 
+$app->get("/admin/users/:iduser/password", function(int $iduser) {
+    RepositoryUser::isAdmin();
+    $page = new PageAdmin();
+    $page->setTpl("users-password", [
+        'iduser' => $iduser,
+        'msgError' => RepositoryUser::getMsgError(),
+        'msgSuccess' => RepositoryUser::getMsgSuccess()
+    ]);
+});
+$app->post("/admin/users/:iduser/password", function(int $iduser) {
+    RepositoryUser::checkLogin(true);    
+    if (!isset($_POST['password']) || trim($_POST['password']) === '') {
+        RepositoryUser::setMsgError("Digite a nova senha.");
+        header("Location: /ecommerce/admin/users/{$iduser}/password");
+        exit;
+    }
+    if (!isset($_POST['password-confirm']) || trim($_POST['password-confirm']) === '') {
+        RepositoryUser::setMsgError("Confirme a nova senha.");
+        header("Location: /ecommerce/admin/users/{$iduser}/password");
+        exit;
+    }
+    if ($_POST['password'] !== $_POST['password-confirm']) {
+        RepositoryUser::setMsgError("As senhas informadas são diferentes");
+        header("Location: /ecommerce/admin/users/{$iduser}/password");
+        exit;
+    }
+    $user = RepositoryUser::find($iduser);    
+    $user->setPassword(md5($_POST['password']));
+    $repositoryUser = new RepositoryUser();
+    $repositoryUser->update($user);
+    RepositoryUser::setMsgSuccess("Senha alterada com sucesso.");
+    header("Location: /ecommerce/admin/users/{$iduser}/password");
+    exit;
+});
+
+
 $app->get('/admin/users/:iduser/delete', function($iduser) {
     RepositoryUser::isAdmin();
     $repositoryUser = new RepositoryUser();
@@ -62,7 +98,7 @@ $app->get('/admin/users/:iduser', function($iduser) {
     $repositoryUser = new RepositoryUser();
     $page = new PageAdmin();
     $page->setTpl("users-update", array(
-        "user" => $repositoryUser->find((int) $iduser)
+        "user" => User::userToArray($repositoryUser->find((int) $iduser))
     ));
 });
 

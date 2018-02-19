@@ -3,43 +3,19 @@
     <!-- Slider -->
     <div class="block-slider block-slider4">
         <ul class="" id="bxslider-home4">
+            <?php $counter1=-1;  if( isset($destaque) && ( is_array($destaque) || $destaque instanceof Traversable ) && sizeof($destaque) ) foreach( $destaque as $key1 => $value1 ){ $counter1++; ?>
             <li>
-                <img src="/ecommerce/assets/site/img/h4-slide.png" alt="Slide">
+                <img src="/ecommerce/assets/site/img/products/<?php echo htmlspecialchars( $value1["imgproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" alt="<?php echo htmlspecialchars( $value1["product"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" style="max-height: 250px; width: auto">
                 <div class="caption-group">
                     <h2 class="caption title">
-                        iPhone <span class="primary">6 <strong>Plus</strong></span>
+                        <?php echo htmlspecialchars( $value1["product"], ENT_COMPAT, 'UTF-8', FALSE ); ?>
                     </h2>
-                    <h4 class="caption subtitle">Dual SIM</h4>
-                    <a class="caption button-radius" href="#"><span class="icon"></span>Comprar</a>
+                    R$ <?php echo formatPrice($value1["vlprice"]); ?><br>
+                    <a class="caption button-radius" href="/ecommerce/cart/<?php echo htmlspecialchars( $value1["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>/add"><span class="icon"></span>Comprar</a>
                 </div>
             </li>
-            <li><img src="/ecommerce/assets/site/img/h4-slide2.png" alt="Slide">
-                <div class="caption-group">
-                    <h2 class="caption title">
-                        by one, get one <span class="primary">50% <strong>off</strong></span>
-                    </h2>
-                    <h4 class="caption subtitle">school supplies & backpacks.*</h4>
-                    <a class="caption button-radius" href="#"><span class="icon"></span>Comprar</a>
-                </div>
-            </li>
-            <li><img src="/ecommerce/assets/site/img/h4-slide3.png" alt="Slide">
-                <div class="caption-group">
-                    <h2 class="caption title">
-                        Apple <span class="primary">Store <strong>Ipod</strong></span>
-                    </h2>
-                    <h4 class="caption subtitle">Select Item</h4>
-                    <a class="caption button-radius" href="#"><span class="icon"></span>Comprar</a>
-                </div>
-            </li>
-            <li><img src="/ecommerce/assets/site/img/h4-slide4.png" alt="Slide">
-                <div class="caption-group">
-                    <h2 class="caption title">
-                        Apple <span class="primary">Store <strong>Ipod</strong></span>
-                    </h2>
-                    <h4 class="caption subtitle">& Phone</h4>
-                    <a class="caption button-radius" href="#"><span class="icon"></span>Comprar</a>
-                </div>
-            </li>
+            <?php } ?>
+
         </ul>
     </div>
     <!-- ./Slider -->
@@ -101,7 +77,7 @@
                                 <ins>R$ <?php echo formatPrice($value1["vlprice"]); ?></ins> 
                             </div> 
                         </div>                       
-                       <?php } ?>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

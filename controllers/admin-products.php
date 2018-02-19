@@ -44,8 +44,13 @@ $app->post('/admin/products/create', function() {
     RepositoryUser::isAdmin();
     $repositoryProduct = new RepositoryProduct();
     $img = $repositoryProduct->uploadImg($_FILES['imgproduct']);
+    $destaque = (isset($_POST["destaque"])) ? 1 : 0;
+    $url = str_replace('/', '-', $_POST['product']);
+    $url = str_replace(' ', '-', $url);
+    $url = preg_replace(array("/(á|à|ã|â|ä)/","/(Á|À|Ã|Â|Ä)/","/(é|è|ê|ë)/","/(É|È|Ê|Ë)/","/(í|ì|î|ï)/","/(Í|Ì|Î|Ï)/","/(ó|ò|õ|ô|ö)/","/(Ó|Ò|Õ|Ô|Ö)/","/(ú|ù|û|ü)/","/(Ú|Ù|Û|Ü)/","/(ñ)/","/(Ñ)/"),explode(" ","a A e E i I o O u U n N"),$url);
+    $url = strtolower($url);
     $product = new Product();
-    $product->setAtributes('', $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], $_POST['vlweight'], $_POST['url'], $img, '');
+    $product->setAtributes('', $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], $_POST['vlweight'], $url, $img, '', $destaque);
 
     $repositoryProduct->insert($product);
     header("Location: /ecommerce/admin/products");
@@ -78,8 +83,12 @@ $app->post('/admin/products/:idproduct', function($idproduct) {
         $product = $repositoryProduct->find((int) $idproduct);
         $img = $product['imgproduct'];
     }        
+    $destaque = (isset($_POST["destaque"])) ? 1 : 0;
+    $url = str_replace('/', '-', $_POST['product']);
+    $url = str_replace(' ', '-', $url);
+    $url = preg_replace(array("/(á|à|ã|â|ä)/","/(Á|À|Ã|Â|Ä)/","/(é|è|ê|ë)/","/(É|È|Ê|Ë)/","/(í|ì|î|ï)/","/(Í|Ì|Î|Ï)/","/(ó|ò|õ|ô|ö)/","/(Ó|Ò|Õ|Ô|Ö)/","/(ú|ù|û|ü)/","/(Ú|Ù|Û|Ü)/","/(ñ)/","/(Ñ)/"),explode(" ","a A e E i I o O u U n N"),$url);
     $product = new Product(); 
-    $product->setAtributes($idproduct, $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], $_POST['vlweight'], $_POST['url'], $img, '');
+    $product->setAtributes($idproduct, $_POST['product'], $_POST['vlprice'], $_POST['vlwidth'], $_POST['vlheight'], $_POST['vllength'], $_POST['vlweight'], $url, $img, '', $destaque);
     $repositoryProduct->update($product);
     header("Location: /ecommerce/admin/products");
     exit;

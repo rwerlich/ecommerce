@@ -58,7 +58,8 @@ $app->get('/checkout', function() {
     $cart = RepositoryCart::getFromSession();
     $repositoryCart = new RepositoryCart();
     $cep = (isset($_GET['zipcode'])) ? $_GET['zipcode'] : $cart['zipcode'];
-    if (preg_replace("/[^0-9]/", "", $cep) !== $cart['zipcode']) {
+    $cep = preg_replace("/[^0-9]/", "", $cep);
+    if (strlen($cep) === 11 && $cep !== $cart['zipcode']) {
         $repositoryCart->updateZipcode($cep, $cart['idcart']);
         $cart = RepositoryCart::get($cart['idcart']);
     }

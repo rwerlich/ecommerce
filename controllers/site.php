@@ -9,6 +9,7 @@ $app->get('/', function() {
     $products = $repositoryProduct->listAll();
     $page = new Page();
     $page->setTpl("index", array(
+        'destaque' => $repositoryProduct->listDestaques(),
         'products' => $products
     ));
 });
@@ -28,12 +29,17 @@ $app->get("/login", function() {
     ]);
 });
 
-$app->post('/login', function() {
+$app->post('/login', function() {    
     try {
         RepositoryUser::login($_POST["login"], $_POST["password"]);
     } catch (Exception $ex) {
         RepositoryUser::setMsgError($ex->getMessage());
     }
-    header("Location: /ecommerce/checkout");
-    exit;
+    if(getCartVlSubTotal() > 0){
+        header("Location: /ecommerce/checkout");
+        exit;
+    }else{
+        header("Location: /ecommerce/profile");
+        exit;
+    } 
 });

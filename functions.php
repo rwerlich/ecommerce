@@ -36,7 +36,6 @@ function getCartNrQtd() {
 
 function getCartVlSubTotal() {
     if (getCartNrQtd() > 0) {
-        $repositorioCart = new RepositoryCart();
         $cart = RepositoryCart::getFromSession();
         return formatPrice($cart['vltotal']);
     }else{
