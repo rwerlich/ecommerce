@@ -243,7 +243,7 @@ class RepositoryUser implements SessionMsgs {
                 . "WHERE nome LIKE :search OR login LIKE :search OR email = :search "
                 . "ORDER BY nome ASC LIMIT {$start}, {$itens}";
         $stmt = $this->bd->prepare($query);
-        $stmt->bindValue(':search', $search);
+        $stmt->bindValue(':search', "%{$search}%");
         $stmt->execute();
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         

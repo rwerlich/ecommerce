@@ -7,14 +7,30 @@ use \Werlich\PageAdmin;
 
 $app->get('/admin/products', function() {
     RepositoryUser::isAdmin();
-    $repositoryUser = new RepositoryUser();
-
     $repositoryProduct = new RepositoryProduct();
-    $products = $repositoryProduct->listAll();
+    $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+    $page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
+    if ($search != '') {
+        $pagination = $repositoryProduct->getPageSearch($search, $page);
+    } else {
+        $pagination = $repositoryProduct->getPage($page);
+    }
+    $pages = [];
+    for ($x = 0; $x < $pagination['pages']; $x++) {
+        array_push($pages, [
+            'href' => '/ecommerce/admin/products?' . http_build_query([
+                'page' => $x + 1,
+                'search' => $search
+            ]),
+            'text' => $x + 1
+        ]);
+    }
 
     $page = new PageAdmin();
     $page->setTpl("products", array(
-        "products" => $products
+        "products" => $pagination['data'],
+        "search" => $search,
+        "pages" => $pages
     ));
 });
 
